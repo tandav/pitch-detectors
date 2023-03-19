@@ -1,0 +1,156 @@
+[project]
+name = "pitch-detectors"
+version = "0.0.1"
+authors = [
+    {name = "Alexander Rodionov", email = "tandav@tandav.me"},
+]
+description = "collection of pitch detection algorithms with unified interface"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "AMFM-decompy",
+    "crepe",
+    "dsplib==0.7.0",
+    "librosa",
+    "numpy",
+    "praat-parselmouth==0.4.1",
+    "PyAudio",
+    "pyreaper==0.0.9",
+    "pysptk",
+    "pyworld==0.3.2",
+    "resampy",
+    "scipy",
+    "tensorflow",
+    "tensorflow-hub",
+    "torch",
+    "torch-yin",
+    "torchcrepe",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bumpver",
+    "pre-commit",
+    "pytest",
+]
+
+[project.urls]
+source = "https://github.com/tandav/pitch-detectors"
+# docs = "https://tandav.github.io/pitch-detectors/"
+issues = "https://github.com/tandav/pitch-detectors/issues"
+"release notes" = "https://github.com/tandav/pitch-detectors/releases"
+
+# ==============================================================================
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+# ==============================================================================
+
+[tool.bumpver]
+current_version = "v0.0.1"
+version_pattern = "vMAJOR.MINOR.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+commit = true
+tag = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    '^version = "{pep440_version}"',
+    '^current_version = "{version}"',
+]
+"pitch_detectors/__init__.py" = [
+    "^__version__ = '{pep440_version}'",
+]
+
+# ==============================================================================
+
+[tool.mypy]
+# todo: review this
+pretty = true
+show_traceback = true
+color_output = true
+allow_redefinition = false
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+implicit_reexport = false
+no_implicit_optional = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+# ==============================================================================
+
+[tool.ruff]
+extend-select = [
+    "W",
+    "C",
+    "I",
+    "SIM",
+    "TCH",
+    "C4",
+    "S",
+    "BLE",
+    "B",
+    "T10",
+    "INP",
+    "PIE",
+    "PL",
+    "RUF",
+]
+ignore = [
+    "E501",  # line too long
+    "E731",
+    "E701",
+    "E702",
+    "F403", # star imports
+    "F405", # star imports
+    "B008",
+    "PLR0913",
+    "TCH003",
+]
+
+[tool.ruff.per-file-ignores]
+"examples/*" = ["INP001"]
+"tests/*" = ["S101"]
+
+[tool.ruff.isort]
+force-single-line = true
+
+# ==============================================================================
+
+[tool.pylint.messages-control]
+disable = [
+    "C0321","C3001","C0116","C0301","C0103","C0115","C0114",
+    "W1514",
+    "W0401",  # wildcard import
+    "W0614",
+    "W1113",
+    "R0903",
+    "E0401",
+]
+
+# ==============================================================================
+
+[tool.autopep8]
+ignore="E501,E701"
+recursive = true
+aggressive = 3
+
+# ==============================================================================

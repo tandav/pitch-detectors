@@ -24,7 +24,7 @@ class PitchDetector:
 
     @classmethod
     def name(cls) -> str:
-        return cls.__class__.__name__
+        return cls.__name__
 
 
 class PraatAC(PitchDetector):
@@ -165,10 +165,10 @@ class Swipe(PitchDetector):
 
 class Reaper(PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
-        import dsplib.scale
         import pyreaper
+        from dsplib.scale import minmax_scaler
         int16_info = np.iinfo(np.int16)
-        a = dsplib.scale.minmax_scaler(a, np.min(a), np.max(a), int16_info.min, int16_info.max).round().astype(np.int16)
+        a = minmax_scaler(a, np.min(a), np.max(a), int16_info.min, int16_info.max).round().astype(np.int16)
         super().__init__(a, fs, hz_min, hz_max)
         pm_times, pm, f0_times, f0, corr = pyreaper.reaper(self.a, fs=self.fs, minf0=self.hz_min, maxf0=self.hz_max, frame_period=0.01)
         f0[f0 == -1] = np.nan
@@ -226,9 +226,9 @@ class TorchYin(PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import torch
         import torchyin
-        a = torch.from_numpy(a)
         super().__init__(a, fs, hz_min, hz_max)
-        f0 = torchyin.estimate(self.a, sample_rate=self.fs, pitch_min=self.hz_min, pitch_max=self.hz_max)
+        _a = torch.from_numpy(a)
+        f0 = torchyin.estimate(_a, sample_rate=self.fs, pitch_min=self.hz_min, pitch_max=self.hz_max)
         f0[f0 == 0] = np.nan
         self.f0 = f0[:-1]
         self.t = np.linspace(0, self.seconds, f0.shape[0])[1:]

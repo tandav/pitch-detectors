@@ -12,14 +12,18 @@ class PitchDetector:
         self.hz_min = hz_min
         self.hz_max = hz_max
         self.seconds = len(a) / fs
-        self.f0 = None
-        self.t = None
+        self.f0: np.ndarray | None = None
+        self.t: np.ndarray | None = None
 
-    def dict(self):
+    def dict(self) -> dict[str, list[float | None]]:
+        if self.f0 is None:
+            raise ValueError('f0 must be not None')
+        if self.t is None:
+            raise ValueError('t must be not None')
         return {'f0': util.nan_to_none(self.f0.tolist()), 't': self.t.tolist()}
 
     @classmethod
-    def name(cls):
+    def name(cls) -> str:
         return cls.__class__.__name__
 
 
@@ -92,8 +96,8 @@ class TorchCrepe(PitchDetector):
 
     def __init__(
         self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8,
-        batch_size=2048,
-        device=None,
+        batch_size: int = 2048,
+        device: str | None = None,
     ):
         import torch
         import torchcrepe
@@ -180,9 +184,9 @@ class Spice(PitchDetector):
         self,
         a: np.ndarray,
         fs: int,
-        confidence_threshold=0.8,
+        confidence_threshold: float = 0.8,
         expected_sample_rate: int = 16000,
-        spice_model_path='data/spice_model/',
+        spice_model_path: str = 'data/spice_model/',
     ):
         import resampy
         import tensorflow as tf

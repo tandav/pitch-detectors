@@ -127,7 +127,7 @@ class TorchCrepe(PitchDetector):
 class Yaapt(PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import amfm_decompy.basic_tools as basic
-        import amfm_decompy.pYAAPT as pYAAPT
+        from amfm_decompy import pYAAPT
         super().__init__(a, fs, hz_min, hz_max)
         self.signal = basic.SignalObj(data=self.a, fs=self.fs)
         f0 = pYAAPT.yaapt(self.signal, f0_min=self.hz_min, f0_max=self.hz_max, frame_length=15)
@@ -178,7 +178,7 @@ class Spice(PitchDetector):
         self, a: np.ndarray, fs: int,
         confidence_threshold=0.8,
         expected_sample_rate: int = 16000,
-        spice_model_path = 'data/spice_model/',
+        spice_model_path='data/spice_model/',
     ):
         import resampy
         import tensorflow as tf

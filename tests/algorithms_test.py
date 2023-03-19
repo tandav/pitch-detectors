@@ -1,9 +1,11 @@
+from pathlib import Path
+
 import numpy as np
 import pytest
-from pitch_detectors.algorithms import ALGORITHMS
-from scipy.io import wavfile
-from pathlib import Path
 from dsplib.scale import minmax_scaler
+from scipy.io import wavfile
+
+from pitch_detectors.algorithms import ALGORITHMS
 
 
 @pytest.fixture
@@ -18,4 +20,4 @@ def a_fs(rescale: float = 100000):
 @pytest.mark.parametrize('algorithm', ALGORITHMS)
 def test_detection(algorithm, a_fs):
     a, fs = a_fs
-    p = algorithm(a, fs)
+    algorithm(a, fs)

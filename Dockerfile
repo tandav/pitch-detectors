@@ -8,4 +8,3 @@ RUN apt-get update && apt-get install -y python3-pip
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install tensorflow
-

@@ -135,16 +135,38 @@ force-single-line = true
 
 # ==============================================================================
 
+[tool.pylint.MASTER]
+load-plugins=[
+    "pylint_per_file_ignores",
+]
+
+[tool.pylint.BASIC]
+good-names = [
+    "a",
+    "fs",
+    "f0",
+    "t",
+    "x",
+    "pm",
+    "sp",
+    "ap",
+]
+
 [tool.pylint.messages-control]
 disable = [
-    "C0321","C3001","C0116","C0301","C0103","C0115","C0114",
-    "W1514",
-    "W0401",  # wildcard import
-    "W0614",
-    "W1113",
-    "R0903",
-    "E0401",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "missing-module-docstring",
+    "line-too-long",
+    "import-outside-toplevel",
+    "unused-variable",
+    "too-many-arguments",
+    "import-error",
 ]
+
+[tool.pylint-per-file-ignores]
+"/tests/" = "redefined-outer-name"
+
 
 # ==============================================================================
 

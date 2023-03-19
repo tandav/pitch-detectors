@@ -13,6 +13,7 @@ class PitchDetector:
         self.hz_max = hz_max
         self.seconds = len(a) / fs
         self.f0 = None
+        self.t = None
 
     def dict(self):
         return {'f0': util.nan_to_none(self.f0.tolist()), 't': self.t.tolist()}
@@ -97,7 +98,8 @@ class TorchCrepe(PitchDetector):
         import torch
         import torchcrepe
         if device is None:
-            torch.device('cuda:0' if torch.cuda.is_available() else 'cpu'),
+            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+            torch.device(device)
 
         super().__init__(a, fs, hz_min, hz_max)
         if not torch.cuda.is_available():
@@ -175,7 +177,9 @@ class Spice(PitchDetector):
     use_gpu = True
 
     def __init__(
-        self, a: np.ndarray, fs: int,
+        self,
+        a: np.ndarray,
+        fs: int,
         confidence_threshold=0.8,
         expected_sample_rate: int = 16000,
         spice_model_path='data/spice_model/',
@@ -194,18 +198,18 @@ class Spice(PitchDetector):
     def output2hz(
         self,
         pitch_output: np.ndarray,
-        PT_OFFSET: float = 25.58,
-        PT_SLOPE: float = 63.07,
-        FMIN: float = 10.0,
-        BINS_PER_OCTAVE: float = 12.0,
+        pt_offset: float = 25.58,
+        pt_slope: float = 63.07,
+        fmin: float = 10.0,
+        bins_per_octave: float = 12.0,
     ) -> np.ndarray:
         """convert pitch from the model output [0.0, 1.0] range to absolute values in Hz."""
-        cqt_bin = pitch_output * PT_SLOPE + PT_OFFSET
-        return FMIN * 2.0 ** (1.0 * cqt_bin / BINS_PER_OCTAVE)
+        cqt_bin = pitch_output * pt_slope + pt_offset
+        return fmin * 2.0 ** (1.0 * cqt_bin / bins_per_octave)
 
 
 class World(PitchDetector):
-    def __init__(self, a: np.ndarray, fs):
+    def __init__(self, a: np.ndarray, fs: int):
         import pyworld
         super().__init__(a, fs)
         f0, sp, ap = pyworld.wav2world(a.astype(float), fs)

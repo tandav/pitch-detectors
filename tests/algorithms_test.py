@@ -14,6 +14,7 @@ def a_fs(rescale: float = 100000):
     assert a.dtype == np.float32
     yield a, fs
 
+
 @pytest.mark.parametrize('algorithm', ALGORITHMS)
 def test_detection(algorithm, a_fs):
     a, fs = a_fs

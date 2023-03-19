@@ -1,6 +1,5 @@
 import numpy as np
 
-from pitch_detectors import config
 from pitch_detectors import util
 
 
@@ -179,13 +178,14 @@ class Spice(PitchDetector):
         self, a: np.ndarray, fs: int,
         confidence_threshold=0.8,
         expected_sample_rate: int = 16000,
+        spice_model_path = 'data/spice_model/',
     ):
         import resampy
         import tensorflow as tf
         import tensorflow_hub as hub
         a = resampy.resample(a, fs, expected_sample_rate)
         super().__init__(a, fs)
-        model = hub.load(config.spice_model_path)
+        model = hub.load(spice_model_path)
         model_output = model.signatures['serving_default'](tf.constant(a, tf.float32))
         confidence = 1.0 - model_output['uncertainty']
         f0 = self.output2hz(model_output['pitch'].numpy())

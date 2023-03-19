@@ -6,7 +6,7 @@ authors = [
 ]
 description = "collection of pitch detection algorithms with unified interface"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.8,<3.11"
 dependencies = [
     "AMFM-decompy",
     "crepe",

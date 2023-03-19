@@ -116,14 +116,7 @@ extend-select = [
 ]
 ignore = [
     "E501",  # line too long
-    "E731",
-    "E701",
-    "E702",
-    "F403", # star imports
-    "F405", # star imports
-    "B008",
     "PLR0913",
-    "TCH003",
 ]
 
 [tool.ruff.per-file-ignores]

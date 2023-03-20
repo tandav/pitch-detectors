@@ -11,10 +11,10 @@ collection of pitch detection algorithms with unified interface
 | [Pyin](https://librosa.org/doc/latest/generated/librosa.pyin.html)       |  ✓  |     |
 | [Reaper](https://github.com/r9y9/pyreaper)     |  ✓  |     |
 | [Yaapt](http://bjbschmitt.github.io/AMFM_decompy/pYAAPT.html#amfm_decompy.pYAAPT.yaapt)      |  ✓  |     |
-| [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)       |  ✓  |     |
-| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)      |  ✓  |  ✓  |
 | [World](https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder)      |  ✓  |     |
 | [TorchYin](https://github.com/brentspell/torch-yin)   |  ✓  |     |
+| [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)       |  ✓  |     |
+| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)      |  ✓  |  ✓  |
 | [Crepe](https://github.com/marl/crepe)      |  ✓  |  ✓  |
 | [TorchCrepe](https://github.com/maxrmorrison/torchcrepe) |  ✓  |  ✓  |
 

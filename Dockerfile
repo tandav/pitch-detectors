@@ -1,5 +1,6 @@
-# FROM nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04
-FROM nvidia/cuda:12.0.1-cudnn8-devel-ubuntu22.04
+# FROM nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04 - SUCCESS
+# FROM nvidia/cuda:12.0.1-cudnn8-devel-ubuntu22.04 - FAIL
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # https://github.com/NVIDIA/nvidia-docker/wiki/Usage
 # https://github.com/NVIDIA/nvidia-docker/issues/531

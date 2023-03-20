@@ -32,6 +32,7 @@ dev = [
     "bumpver",
     "pre-commit",
     "pytest",
+    "pytest-order",
 ]
 
 [project.urls]

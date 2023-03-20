@@ -24,7 +24,8 @@ def record(rescale: float = 100000):
     return Record(a, fs)
 
 
-@pytest.mark.filterwarnings('ignore:pkg_resources')
+@pytest.mark.filterwarnings('ignore:pkg_resources is deprecated as an API')
+@pytest.mark.filterwarnings('ignore:Deprecated call to `pkg_resources.declare_namespace')
 @pytest.mark.parametrize('algorithm', ALGORITHMS)
 def test_detection(algorithm, record):
     algorithm(record.a, record.fs)

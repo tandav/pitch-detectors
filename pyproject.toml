@@ -156,6 +156,7 @@ disable = [
     "unused-variable",
     "too-many-arguments",
     "import-error",
+    "too-few-public-methods",
 ]
 
 [tool.pylint-per-file-ignores]

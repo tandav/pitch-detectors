@@ -1,3 +1,9 @@
+FROM alpine/curl as downloader
+RUN curl -L https://tfhub.dev/google/spice/2?tf-hub-format=compressed --output spice_2.tar.gz && \
+    mkdir /spice_model && \
+    tar xvf spice_2.tar.gz --directory /spice_model && \
+    rm spice_2.tar.gz
+
 # FROM nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04 - SUCCESS
 # FROM nvidia/cuda:12.0.1-cudnn8-devel-ubuntu22.04 - FAIL
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
@@ -5,6 +11,8 @@ FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 # https://github.com/NVIDIA/nvidia-docker/wiki/Usage
 # https://github.com/NVIDIA/nvidia-docker/issues/531
 ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
+
+COPY --from=downloader /spice_model /spice_model
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common && \

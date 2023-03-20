@@ -1,3 +1,4 @@
+import os
 import typing as tp
 
 import numpy as np
@@ -16,6 +17,12 @@ class PitchDetector:
         self.seconds = len(a) / fs
         self.f0: tp.Optional[np.ndarray] = None
         self.t: tp.Optional[np.ndarray] = None
+        if (
+            os.environ.get('PITCH_DETECTORS_ERROR_GPU_NOT_AVAILABLE') and
+            self.use_gpu and
+            not self.gpu_available()
+        ):
+            raise ConnectionError(f'gpu must be available for {self.name()} algorithm')
 
     def dict(self) -> dict[str, list[tp.Optional[float]]]:
         if self.f0 is None:
@@ -27,6 +34,25 @@ class PitchDetector:
     @classmethod
     def name(cls) -> str:
         return cls.__name__
+
+    def gpu_available(self) -> bool:
+        return False
+
+
+class TensorflowGPU:
+    use_gpu = True
+
+    def gpu_available(self) -> bool:
+        import tensorflow as tf
+        return bool(tf.config.experimental.list_physical_devices('GPU'))
+
+
+class TorchGPU:
+    use_gpu = True
+
+    def gpu_available(self) -> bool:
+        import torch
+        return torch.cuda.is_available()
 
 
 class PraatAC(PitchDetector):
@@ -75,17 +101,13 @@ class Pyin(PitchDetector):
         self.t = np.linspace(0, self.seconds, f0.shape[0])
 
 
-class Crepe(PitchDetector):
-    use_gpu = True
-
+class Crepe(TensorflowGPU, PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8):
         import crepe
         import tensorflow as tf
         super().__init__(a, fs, hz_min, hz_max)
 
         gpus = tf.config.experimental.list_physical_devices('GPU')
-        if not gpus:
-            raise RuntimeError('Crepe requires a GPU')
         for gpu in gpus:
             tf.config.experimental.set_memory_growth(gpu, True)
 
@@ -93,9 +115,7 @@ class Crepe(PitchDetector):
         self.f0[self.confidence < confidence_threshold] = np.nan
 
 
-class TorchCrepe(PitchDetector):
-    use_gpu = True
-
+class TorchCrepe(TorchGPU, PitchDetector):
     def __init__(
         self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8,
         batch_size: int = 2048,
@@ -178,17 +198,14 @@ class Reaper(PitchDetector):
         self.t = f0_times
 
 
-class Spice(PitchDetector):
-    """https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html"""
-    use_gpu = True
-
+class Spice(TensorflowGPU, PitchDetector):
     def __init__(
         self,
         a: np.ndarray,
         fs: int,
         confidence_threshold: float = 0.8,
         expected_sample_rate: int = 16000,
-        spice_model_path: str = 'data/spice_model/',
+        spice_model_path: str = '/spice_model',
     ):
         import resampy
         import tensorflow as tf
@@ -249,6 +266,7 @@ ALGORITHMS = (
     Rapt,
     World,
     TorchYin,
+    Spice,
 )
 
 cpu_algorithms = (
@@ -266,7 +284,7 @@ cpu_algorithms = (
 gpu_algorithms = (
     'Crepe',
     'TorchCrepe',
-    'Swipe',
+    'Spice',
 )
 
 algorithms = cpu_algorithms + gpu_algorithms

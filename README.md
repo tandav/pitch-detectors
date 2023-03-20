@@ -14,14 +14,11 @@ collection of pitch detection algorithms with unified interface
 | [World](https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder)      |  ✓  |     |
 | [TorchYin](https://github.com/brentspell/torch-yin)   |  ✓  |     |
 | [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)       |  ✓  |     |
-| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)      |  ✓  |  ✓  |
+| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)      |  ✓  |     |
 | [Crepe](https://github.com/marl/crepe)      |  ✓  |  ✓  |
 | [TorchCrepe](https://github.com/maxrmorrison/torchcrepe) |  ✓  |  ✓  |
+| [Spice](https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html) |  ✓  |  ✓  |
 
-
-## additional features
-- robust (vote-based + median) averaging of pitch
-- json import/export
 
 ## install
 ```bash
@@ -29,3 +26,11 @@ pip install pitch-detectors
 ```
 
 ## usage
+
+```python
+from pitch_detectors
+```
+
+## additional features
+- robust (vote-based + median) averaging of pitch
+- json import/export

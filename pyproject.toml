@@ -10,7 +10,7 @@ requires-python = ">=3.8"
 dependencies = [
     "AMFM-decompy",
     "crepe",
-    "dsplib==0.7.0",
+    "dsplib==0.7.2",
     "librosa",
     "numpy",
     "praat-parselmouth==0.4.1",

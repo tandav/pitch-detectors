@@ -18,7 +18,7 @@ class PitchDetector:
         self.f0: tp.Optional[np.ndarray] = None
         self.t: tp.Optional[np.ndarray] = None
         if (
-            os.environ.get('PITCH_DETECTORS_ERROR_GPU_NOT_AVAILABLE') and
+            os.environ.get('PITCH_DETECTORS_GPU') == 'true' and
             self.use_gpu and
             not self.gpu_available()
         ):
@@ -128,8 +128,6 @@ class TorchCrepe(TorchGPU, PitchDetector):
             torch.device(device)
 
         super().__init__(a, fs, hz_min, hz_max)
-        if not torch.cuda.is_available():
-            raise RuntimeError('TorchCrepe requires a GPU')
 
         f0, confidence = torchcrepe.predict(
             torch.from_numpy(a[np.newaxis, ...]),

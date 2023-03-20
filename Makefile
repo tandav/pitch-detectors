@@ -12,7 +12,16 @@ push:
 .PHONY: test
 test: build
 	docker run --rm -t --gpus all \
-	-e PITCH_DETECTORS_ERROR_GPU_NOT_AVAILABLE=true \
+	-e PITCH_DETECTORS_GPU=true \
+	-v $$PWD/pitch_detectors:/app/pitch_detectors \
+	-v $$PWD/tests:/app/tests \
+	tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04 \
+	pytest -v --cov pitch_detectors --cov-fail-under 90
+
+.PHONY: test-no-gpu
+test-no-gpu: build
+	docker run --rm -t \
+	-e PITCH_DETECTORS_GPU=false \
 	-v $$PWD/pitch_detectors:/app/pitch_detectors \
 	-v $$PWD/tests:/app/tests \
 	tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04 \

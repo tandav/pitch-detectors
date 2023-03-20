@@ -14,8 +14,11 @@ jobs:
       - name: build image
         run: make build
 
-      - name: test image
+      - name: test
         run: make test
+
+      - name: test-no-gpu
+        run: make test-no-gpu
 
       # - name: push image
       #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}

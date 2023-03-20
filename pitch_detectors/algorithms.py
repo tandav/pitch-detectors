@@ -1,5 +1,4 @@
 import os
-import typing as tp
 
 import numpy as np
 
@@ -15,8 +14,8 @@ class PitchDetector:
         self.hz_min = hz_min
         self.hz_max = hz_max
         self.seconds = len(a) / fs
-        self.f0: tp.Optional[np.ndarray] = None
-        self.t: tp.Optional[np.ndarray] = None
+        self.f0: np.ndarray | None = None
+        self.t: np.ndarray | None = None
         if (
             os.environ.get('PITCH_DETECTORS_GPU') == 'true' and
             self.use_gpu and
@@ -24,7 +23,7 @@ class PitchDetector:
         ):
             raise ConnectionError(f'gpu must be available for {self.name()} algorithm')
 
-    def dict(self) -> dict[str, list[tp.Optional[float]]]:
+    def dict(self) -> dict[str, list[float | None]]:
         if self.f0 is None:
             raise ValueError('f0 must be not None')
         if self.t is None:
@@ -119,7 +118,7 @@ class TorchCrepe(TorchGPU, PitchDetector):
     def __init__(
         self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8,
         batch_size: int = 2048,
-        device: tp.Optional[str] = None,
+        device: str | None = None,
     ):
         import torch
         import torchcrepe

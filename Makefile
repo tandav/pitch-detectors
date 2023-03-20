@@ -12,6 +12,7 @@ push:
 .PHONY: test
 test: build
 	docker run --rm -t --gpus all \
+	-e PYTHONDONTWRITEBYTECODE=1 \
 	-e PITCH_DETECTORS_GPU=true \
 	-v $$PWD/pitch_detectors:/app/pitch_detectors \
 	-v $$PWD/tests:/app/tests \
@@ -21,6 +22,7 @@ test: build
 .PHONY: test-no-gpu
 test-no-gpu: build
 	docker run --rm -t \
+	-e PYTHONDONTWRITEBYTECODE=1 \
 	-e PITCH_DETECTORS_GPU=false \
 	-v $$PWD/pitch_detectors:/app/pitch_detectors \
 	-v $$PWD/tests:/app/tests \

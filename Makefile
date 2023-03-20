@@ -11,7 +11,7 @@ push:
 
 .PHONY: test
 test: build
-	docker run --rm -it --gpus all \
+	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_ERROR_GPU_NOT_AVAILABLE=true \
 	-v $$PWD/pitch_detectors:/app/pitch_detectors \
 	-v $$PWD/tests:/app/tests \

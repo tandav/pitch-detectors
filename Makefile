@@ -6,8 +6,7 @@ build:
 
 .PHONY: push
 push:
-	# docker push tandav/pitch-detectors:cuda11.7.0-cudnn8-devel-ubuntu22.04
-	docker push tandav/pitch-detectors:cuda11.7.0-cudnn8-devel-ubuntu22.04
+	docker push tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04
 	docker push tandav/pitch-detectors:latest
 
 .PHONY: test
@@ -17,4 +16,4 @@ test: build
 	-v $$PWD/pitch_detectors:/app/pitch_detectors \
 	-v $$PWD/tests:/app/tests \
 	tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04 \
-	pytest -v
+	pytest -v --cov pitch_detectors --cov-fail-under 90

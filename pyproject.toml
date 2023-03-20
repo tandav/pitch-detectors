@@ -33,6 +33,7 @@ dev = [
     "pre-commit",
     "pytest",
     "pytest-order",
+    "pytest-cov",
 ]
 
 [project.urls]

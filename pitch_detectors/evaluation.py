@@ -1,6 +1,5 @@
 import argparse
 import os
-import time
 from pathlib import Path
 
 import mir_eval
@@ -83,12 +82,7 @@ def evaluate_one(
     pitch = algorithm(a, fs)
     f0 = resample_f0(pitch, t_resampled=t_true)
     score = raw_pitch_accuracy(f0_true, f0)
-    redis.hset(
-        key, mapping={
-            'raw_pitch_accuracy': score,
-            'timestamp': int(time.time() * 1000),
-        },
-    )
+    redis.set(key, score)
     return key
 
 

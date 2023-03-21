@@ -32,3 +32,8 @@ evaluation: build
 	-v /home/tandav/Downloads/MIR-1K:/app/MIR-1K \
 	$(IMAGE) \
 	python pitch_detectors/evaluation.py
+
+.PHONY: bumpver
+bumpver:
+	# usage: make bumpver PART=minor
+	bumpver update --no-fetch --$(PART)

@@ -1,6 +1,7 @@
+import os
+
 import numpy as np
 
-from pitch_detectors import config
 from pitch_detectors import util
 
 
@@ -13,14 +14,40 @@ class PitchDetector:
         self.hz_min = hz_min
         self.hz_max = hz_max
         self.seconds = len(a) / fs
-        self.f0 = None
+        self.f0: np.ndarray
+        self.t: np.ndarray
+        if (
+            os.environ.get('PITCH_DETECTORS_GPU') == 'true' and
+            self.use_gpu and
+            not self.gpu_available()
+        ):
+            raise ConnectionError(f'gpu must be available for {self.name()} algorithm')
 
-    def dict(self):
+    def dict(self) -> dict[str, list[float | None]]:
         return {'f0': util.nan_to_none(self.f0.tolist()), 't': self.t.tolist()}
 
     @classmethod
-    def name(cls):
-        return cls.__class__.__name__
+    def name(cls) -> str:
+        return cls.__name__
+
+    def gpu_available(self) -> bool:
+        return False
+
+
+class TensorflowGPU:
+    use_gpu = True
+
+    def gpu_available(self) -> bool:
+        import tensorflow as tf
+        return bool(tf.config.experimental.list_physical_devices('GPU'))
+
+
+class TorchGPU:
+    use_gpu = True
+
+    def gpu_available(self) -> bool:
+        import torch
+        return torch.cuda.is_available()  # type: ignore
 
 
 class PraatAC(PitchDetector):
@@ -69,17 +96,13 @@ class Pyin(PitchDetector):
         self.t = np.linspace(0, self.seconds, f0.shape[0])
 
 
-class Crepe(PitchDetector):
-    use_gpu = True
-
+class Crepe(TensorflowGPU, PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8):
         import crepe
         import tensorflow as tf
         super().__init__(a, fs, hz_min, hz_max)
 
         gpus = tf.config.experimental.list_physical_devices('GPU')
-        if not gpus:
-            raise RuntimeError('Crepe requires a GPU')
         for gpu in gpus:
             tf.config.experimental.set_memory_growth(gpu, True)
 
@@ -87,22 +110,19 @@ class Crepe(PitchDetector):
         self.f0[self.confidence < confidence_threshold] = np.nan
 
 
-class TorchCrepe(PitchDetector):
-    use_gpu = True
-
+class TorchCrepe(TorchGPU, PitchDetector):
     def __init__(
         self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8,
-        batch_size=2048,
-        device=None,
+        batch_size: int = 2048,
+        device: str | None = None,
     ):
         import torch
         import torchcrepe
         if device is None:
-            torch.device('cuda:0' if torch.cuda.is_available() else 'cpu'),
+            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+            torch.device(device)
 
         super().__init__(a, fs, hz_min, hz_max)
-        if not torch.cuda.is_available():
-            raise RuntimeError('TorchCrepe requires a GPU')
 
         f0, confidence = torchcrepe.predict(
             torch.from_numpy(a[np.newaxis, ...]),
@@ -128,7 +148,7 @@ class TorchCrepe(PitchDetector):
 class Yaapt(PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import amfm_decompy.basic_tools as basic
-        import amfm_decompy.pYAAPT as pYAAPT
+        from amfm_decompy import pYAAPT
         super().__init__(a, fs, hz_min, hz_max)
         self.signal = basic.SignalObj(data=self.a, fs=self.fs)
         f0 = pYAAPT.yaapt(self.signal, f0_min=self.hz_min, f0_max=self.hz_max, frame_length=15)
@@ -160,10 +180,10 @@ class Swipe(PitchDetector):
 
 class Reaper(PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
-        import dsplib.scale
         import pyreaper
+        from dsplib.scale import minmax_scaler
         int16_info = np.iinfo(np.int16)
-        a = dsplib.scale.minmax_scaler(a, np.min(a), np.max(a), int16_info.min, int16_info.max).round().astype(np.int16)
+        a = minmax_scaler(a, np.min(a), np.max(a), int16_info.min, int16_info.max).round().astype(np.int16)
         super().__init__(a, fs, hz_min, hz_max)
         pm_times, pm, f0_times, f0, corr = pyreaper.reaper(self.a, fs=self.fs, minf0=self.hz_min, maxf0=self.hz_max, frame_period=0.01)
         f0[f0 == -1] = np.nan
@@ -171,41 +191,42 @@ class Reaper(PitchDetector):
         self.t = f0_times
 
 
-class Spice(PitchDetector):
-    """https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html"""
-    use_gpu = True
-
+class Spice(TensorflowGPU, PitchDetector):
     def __init__(
-        self, a: np.ndarray, fs: int,
-        confidence_threshold=0.8,
+        self,
+        a: np.ndarray,
+        fs: int,
+        confidence_threshold: float = 0.8,
         expected_sample_rate: int = 16000,
+        spice_model_path: str = '/spice_model',
     ):
         import resampy
         import tensorflow as tf
         import tensorflow_hub as hub
         a = resampy.resample(a, fs, expected_sample_rate)
         super().__init__(a, fs)
-        model = hub.load(config.spice_model_path)
+        model = hub.load(spice_model_path)
         model_output = model.signatures['serving_default'](tf.constant(a, tf.float32))
         confidence = 1.0 - model_output['uncertainty']
-        f0 = self.output2hz(model_output['pitch'].numpy())
-        f0[confidence < confidence_threshold] = np.nan
+        self.f0 = self.output2hz(model_output['pitch'].numpy())
+        self.f0[confidence < confidence_threshold] = np.nan
+        self.t = np.linspace(0, self.seconds, self.f0.shape[0])
 
     def output2hz(
         self,
         pitch_output: np.ndarray,
-        PT_OFFSET: float = 25.58,
-        PT_SLOPE: float = 63.07,
-        FMIN: float = 10.0,
-        BINS_PER_OCTAVE: float = 12.0,
+        pt_offset: float = 25.58,
+        pt_slope: float = 63.07,
+        fmin: float = 10.0,
+        bins_per_octave: float = 12.0,
     ) -> np.ndarray:
         """convert pitch from the model output [0.0, 1.0] range to absolute values in Hz."""
-        cqt_bin = pitch_output * PT_SLOPE + PT_OFFSET
-        return FMIN * 2.0 ** (1.0 * cqt_bin / BINS_PER_OCTAVE)
+        cqt_bin = pitch_output * pt_slope + pt_offset
+        return fmin * 2.0 ** (1.0 * cqt_bin / bins_per_octave)
 
 
 class World(PitchDetector):
-    def __init__(self, a: np.ndarray, fs):
+    def __init__(self, a: np.ndarray, fs: int):
         import pyworld
         super().__init__(a, fs)
         f0, sp, ap = pyworld.wav2world(a.astype(float), fs)
@@ -218,9 +239,9 @@ class TorchYin(PitchDetector):
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import torch
         import torchyin
-        a = torch.from_numpy(a)
         super().__init__(a, fs, hz_min, hz_max)
-        f0 = torchyin.estimate(self.a, sample_rate=self.fs, pitch_min=self.hz_min, pitch_max=self.hz_max)
+        _a = torch.from_numpy(a)
+        f0 = torchyin.estimate(_a, sample_rate=self.fs, pitch_min=self.hz_min, pitch_max=self.hz_max)
         f0[f0 == 0] = np.nan
         self.f0 = f0[:-1]
         self.t = np.linspace(0, self.seconds, f0.shape[0])[1:]
@@ -239,6 +260,7 @@ ALGORITHMS = (
     Rapt,
     World,
     TorchYin,
+    Spice,
 )
 
 cpu_algorithms = (
@@ -256,7 +278,7 @@ cpu_algorithms = (
 gpu_algorithms = (
     'Crepe',
     'TorchCrepe',
-    'Swipe',
+    'Spice',
 )
 
 algorithms = cpu_algorithms + gpu_algorithms

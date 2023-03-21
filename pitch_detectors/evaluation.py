@@ -1,8 +1,13 @@
+import os
+import time
 from pathlib import Path
-import tqdm
+
 import mir_eval
 import numpy as np
+import tqdm
 from dsplib.scale import minmax_scaler
+from musiclib.pitch import Pitch
+from redis import Redis
 from scipy.io import wavfile
 
 from pitch_detectors import algorithms
@@ -19,6 +24,7 @@ def midi_to_freq(midi_n, ref_frequency=440.0):
 
 
 def load_f0_true(wav_path: Path, seconds: float):
+    p = Pitch()
     pitch_label_dir = wav_path.parent.parent / 'PitchLabel'
     f0_path = (pitch_label_dir / wav_path.stem).with_suffix('.pv')
     f0 = []
@@ -28,7 +34,7 @@ def load_f0_true(wav_path: Path, seconds: float):
             if line == '0':
                 f0.append(float('nan'))
             else:
-                f0.append(midi_to_freq(float(line)))  # todoo fix
+                f0.append(p.note_i_to_hz(float(line)))
     f0 = np.array(f0)
     # t = np.arange(0.02, seconds - 0.02, 0.02)
     # assert t.shape == f0.shape
@@ -66,22 +72,26 @@ def raw_pitch_accuracy(
 
 
 def main():
-    with open(MIR_1K_DIR / 'evaluation.csv', 'w') as f:
-        t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
-        for wav_path in t:
-            fs, a = wavfile.read(wav_path)
-            seconds = len(a) / fs
-            a = a[:, 1].astype(np.float32)
-            rescale = 100000
-            a = minmax_scaler(a, a.min(), a.max(), -rescale, rescale).astype(np.float32)
-            t_true, f0_true = load_f0_true(wav_path, seconds)
-            for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):
-                pitch = algorithm(a, fs)
-                f0 = resample_f0(pitch, t_resampled=t_true)
-                score = raw_pitch_accuracy(f0_true, f0)
-                # print(wav_path.stem, algorithm.name(), score, sep=',')
-                t.set_description(f'{wav_path.stem} {algorithm.name()} {score}')
-                print(wav_path.stem, algorithm.name(), score, sep=',', file=f)
+    redis = Redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+    t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
+    for wav_path in t:
+        fs, a = wavfile.read(wav_path)
+        seconds = len(a) / fs
+        a = a[:, 1].astype(np.float32)
+        rescale = 100000
+        a = minmax_scaler(a, a.min(), a.max(), -rescale, rescale).astype(np.float32)
+        t_true, f0_true = load_f0_true(wav_path, seconds)
+        for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):
+            pitch = algorithm(a, fs)
+            f0 = resample_f0(pitch, t_resampled=t_true)
+            score = raw_pitch_accuracy(f0_true, f0)
+            t.set_description(f'{wav_path.stem} {algorithm.name()} {score}')
+            redis.hset(
+                f'pitch_detectors:evaluation:{algorithm.name()}:{wav_path.stem}', mapping={
+                    'raw_pitch_accuracy': score,
+                    'timestamp': int(time.time() * 1000),
+                },
+            )
 
 
 if __name__ == '__main__':

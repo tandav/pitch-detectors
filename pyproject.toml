@@ -37,6 +37,9 @@ dev = [
     "mir_eval",
     "tqdm",
     "resampy",
+    "redis",
+    "musiclib",
+    "python-dotenv",
 ]
 
 [project.urls]

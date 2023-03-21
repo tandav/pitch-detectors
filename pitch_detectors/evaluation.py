@@ -66,7 +66,7 @@ def raw_pitch_accuracy(
 
 
 def evaluate_one(
-    redis: Redis[str],
+    redis: Redis,  # type: ignore
     algorithm: type[algorithms.PitchDetector],
     wav_path: Path,
 ) -> str:
@@ -86,7 +86,7 @@ def evaluate_one(
     return key
 
 
-def evaluate_all(redis: Redis[str]) -> None:
+def evaluate_all(redis: Redis) -> None:  # type: ignore
     t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
     for wav_path in t:
         for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):

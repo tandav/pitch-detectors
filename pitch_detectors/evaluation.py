@@ -30,8 +30,9 @@ def load_f0_true(wav_path: Path, seconds: float):
             else:
                 f0.append(midi_to_freq(float(line)))  # todoo fix
     f0 = np.array(f0)
-    t = np.arange(0.02, seconds - 0.02, 0.02)
-    assert t.shape == f0.shape
+    # t = np.arange(0.02, seconds - 0.02, 0.02)
+    # assert t.shape == f0.shape
+    t = np.linspace(0.02, seconds, len(f0))
     return t, f0
 
 
@@ -77,8 +78,8 @@ def main():
                 pitch = algorithm(a, fs)
                 f0 = resample_f0(pitch, t_resampled=t_true)
                 score = raw_pitch_accuracy(f0_true, f0)
-                print(wav_path.name, algorithm.name(), score, sep=',')
-                print(wav_path.name, algorithm.name(), score, sep=',', file=f)
+                print(wav_path.stem, algorithm.name(), score, sep=',')
+                print(wav_path.stem, algorithm.name(), score, sep=',', file=f)
 
 
 if __name__ == '__main__':

@@ -212,8 +212,9 @@ class Spice(TensorflowGPU, PitchDetector):
         model = hub.load(spice_model_path)
         model_output = model.signatures['serving_default'](tf.constant(a, tf.float32))
         confidence = 1.0 - model_output['uncertainty']
-        f0 = self.output2hz(model_output['pitch'].numpy())
-        f0[confidence < confidence_threshold] = np.nan
+        self.f0 = self.output2hz(model_output['pitch'].numpy())
+        self.f0[confidence < confidence_threshold] = np.nan
+        self.t = np.linspace(0, self.seconds, self.f0.shape[0])
 
     def output2hz(
         self,

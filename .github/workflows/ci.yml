@@ -3,7 +3,7 @@ name: ci
 on: push
 
 jobs:
-  build:
+  test:
     runs-on: [self-hosted, gpu]
     steps:
       - uses: actions/checkout@v3

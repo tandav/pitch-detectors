@@ -26,6 +26,12 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 WORKDIR /app
 COPY pyproject.toml .
+
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --upgrade pip setuptools wheel && \
+    pip install .[dev]
+
+COPY pitch_detectors /app/pitch_detectors
+COPY tests /app/tests
+RUN --mount=type=cache,target=/root/.cache/pip \
     pip install .[dev]

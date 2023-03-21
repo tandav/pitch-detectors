@@ -12,19 +12,29 @@ push:
 .PHONY: test
 test: build
 	docker run --rm -t --gpus all \
-	-e PYTHONDONTWRITEBYTECODE=1 \
 	-e PITCH_DETECTORS_GPU=true \
-	-v $$PWD/pitch_detectors:/app/pitch_detectors \
-	-v $$PWD/tests:/app/tests \
 	tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04 \
 	pytest -v --cov pitch_detectors --cov-fail-under 90
+	# -e PYTHONDONTWRITEBYTECODE=1 \
+	# -v $$PWD/tests:/app/tests \
+	# -v $$PWD/pitch_detectors:/app/pitch_detectors \
 
 .PHONY: test-no-gpu
 test-no-gpu: build
 	docker run --rm -t \
-	-e PYTHONDONTWRITEBYTECODE=1 \
 	-e PITCH_DETECTORS_GPU=false \
-	-v $$PWD/pitch_detectors:/app/pitch_detectors \
-	-v $$PWD/tests:/app/tests \
 	tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04 \
 	pytest -v --cov pitch_detectors --cov-fail-under 90
+	# -e PYTHONDONTWRITEBYTECODE=1 \
+	# -v $$PWD/tests:/app/tests \
+	# -v $$PWD/pitch_detectors:/app/pitch_detectors \
+
+.PHONY: evaluation
+evaluation: build
+	docker run --rm -t --gpus all \
+	-e PYTHONDONTWRITEBYTECODE=1 \
+	-e PITCH_DETECTORS_GPU=true \
+	-v /home/tandav/Downloads/MIR-1K:/app/MIR-1K \
+	tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04 \
+	python pitch_detectors/evaluation.py
+	# -v $$PWD/pitch_detectors:/app/pitch_detectors \

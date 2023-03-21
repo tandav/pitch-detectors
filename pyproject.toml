@@ -25,7 +25,6 @@ dependencies = [
     "torch",
     "torch-yin",
     "torchcrepe",
-    # "tqdm",
 ]
 
 [project.optional-dependencies]
@@ -35,8 +34,8 @@ dev = [
     "pytest",
     "pytest-order",
     "pytest-cov",
-    # "mir_eval",
-    # "resampy",
+    "mir_eval",
+    "resampy",
 ]
 
 [project.urls]

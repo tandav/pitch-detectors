@@ -1,8 +1,5 @@
 IMAGE = tandav/pitch-detectors:11.8.0-cudnn8-devel-ubuntu22.04
 
-include .env
-export
-
 .PHONY: build
 build:
 	DOCKER_BUILDKIT=1 docker build --progress=plain -t $(IMAGE) .
@@ -28,6 +25,7 @@ test-no-gpu: build
 
 .PHONY: evaluation
 evaluation: build
+	eval "$$(cat .env)"; \
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
 	-e REDIS_URL=$$REDIS_URL \

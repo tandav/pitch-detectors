@@ -54,6 +54,9 @@ issues = "https://github.com/tandav/pitch-detectors/issues"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ["pitch_detectors"]
+
 # ==============================================================================
 
 [tool.bumpver]

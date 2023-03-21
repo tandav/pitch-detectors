@@ -13,7 +13,7 @@ dependencies = [
     "dsplib==0.7.2",
     "librosa",
     "numpy",
-    "praat-parselmouth==0.4.1",
+    "praat-parselmouth==0.4.3",
     "PyAudio",
     "pyreaper==0.0.9",
     "pysptk",

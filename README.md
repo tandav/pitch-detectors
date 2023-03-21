@@ -34,3 +34,4 @@ from pitch_detectors
 ## additional features
 - robust (vote-based + median) averaging of pitch
 - json import/export
+- all agorithms tested on python3.10, this is recommended python version to use

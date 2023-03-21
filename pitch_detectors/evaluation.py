@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import tqdm
 import mir_eval
 import numpy as np
 from dsplib.scale import minmax_scaler
@@ -67,18 +67,20 @@ def raw_pitch_accuracy(
 
 def main():
     with open(MIR_1K_DIR / 'evaluation.csv', 'w') as f:
-        for wav_path in sorted(WAV_DIR.glob('*.wav')):
+        t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
+        for wav_path in t:
             fs, a = wavfile.read(wav_path)
             seconds = len(a) / fs
             a = a[:, 1].astype(np.float32)
             rescale = 100000
             a = minmax_scaler(a, a.min(), a.max(), -rescale, rescale).astype(np.float32)
             t_true, f0_true = load_f0_true(wav_path, seconds)
-            for algorithm in algorithms.ALGORITHMS:
+            for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):
                 pitch = algorithm(a, fs)
                 f0 = resample_f0(pitch, t_resampled=t_true)
                 score = raw_pitch_accuracy(f0_true, f0)
-                print(wav_path.stem, algorithm.name(), score, sep=',')
+                # print(wav_path.stem, algorithm.name(), score, sep=',')
+                t.set_description(f'{wav_path.stem} {algorithm.name()} {score}')
                 print(wav_path.stem, algorithm.name(), score, sep=',', file=f)
 
 

@@ -35,6 +35,7 @@ dev = [
     "pytest-order",
     "pytest-cov",
     "mir_eval",
+    "tqdm",
     "resampy",
 ]
 

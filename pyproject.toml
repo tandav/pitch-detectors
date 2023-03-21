@@ -102,7 +102,7 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
-[tool.mypy.overrides]
+[[tool.mypy.overrides]]
 module = ["tests.*"]
 disallow_untyped_defs = false
 
@@ -154,6 +154,8 @@ good-names = [
     "pm",
     "sp",
     "ap",
+    "f",
+    "p",
 ]
 
 [tool.pylint.messages-control]
@@ -167,6 +169,8 @@ disable = [
     "too-many-arguments",
     "import-error",
     "too-few-public-methods",
+    "unspecified-encoding",
+    "redefined-outer-name",
 ]
 
 [tool.pylint-per-file-ignores]

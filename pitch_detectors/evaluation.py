@@ -17,21 +17,14 @@ MIR_1K_DIR = Path('MIR-1K')
 WAV_DIR = MIR_1K_DIR / 'Wavfile'
 
 
-def midi_to_freq(midi_n, ref_frequency=440.0):
-    if (midi_n == 0):
-        return 0
-    else:
-        return ref_frequency * 2**((midi_n - 69) / 12)
-
-
-def load_f0_true(wav_path: Path, seconds: float):
+def load_f0_true(wav_path: Path, seconds: float) -> tuple[np.ndarray, np.ndarray]:
     p = Pitch()
     pitch_label_dir = wav_path.parent.parent / 'PitchLabel'
     f0_path = (pitch_label_dir / wav_path.stem).with_suffix('.pv')
     f0 = []
     with open(f0_path) as f:
-        for line in f:
-            line = line.strip()
+        for _line in f:
+            line = _line.strip()
             if line == '0':
                 f0.append(float('nan'))
             else:
@@ -46,12 +39,12 @@ def load_f0_true(wav_path: Path, seconds: float):
 def resample_f0(
     pitch: algorithms.PitchDetector,
     t_resampled: np.ndarray,
-):
+) -> np.ndarray:
     f0_resampled = np.full_like(t_resampled, fill_value=np.nan)
     notna_slices = np.ma.clump_unmasked(np.ma.masked_invalid(pitch.f0))
-    for sl in notna_slices:
-        t_slice = pitch.t[sl]
-        f0_slice = pitch.f0[sl]
+    for slice_ in notna_slices:
+        t_slice = pitch.t[slice_]
+        f0_slice = pitch.f0[slice_]
         t_start, t_stop = t_slice[0], t_slice[-1]
         mask = (t_start < t_resampled) & (t_resampled < t_stop)
         t_interp = t_resampled[mask]
@@ -61,22 +54,23 @@ def resample_f0(
 
 
 def raw_pitch_accuracy(
-    ref_f0,
-    est_f0,
-    cent_tolerance=50,
-):
+    ref_f0: np.ndarray,
+    est_f0: np.ndarray,
+    cent_tolerance: float = 50,
+) -> float:
     ref_voicing = np.isfinite(ref_f0)
     est_voicing = np.isfinite(est_f0)
     ref_cent = mir_eval.melody.hz2cents(ref_f0)
     est_cent = mir_eval.melody.hz2cents(est_f0)
-    return mir_eval.melody.raw_pitch_accuracy(ref_voicing, ref_cent, est_voicing, est_cent, cent_tolerance)
+    score: float = mir_eval.melody.raw_pitch_accuracy(ref_voicing, ref_cent, est_voicing, est_cent, cent_tolerance)
+    return score
 
 
 def evaluate_one(
-    redis: Redis,
-    algorithm: algorithms.PitchDetector,
+    redis: Redis[str],
+    algorithm: type[algorithms.PitchDetector],
     wav_path: Path,
-):
+) -> str:
     key = f'pitch_detectors:evaluation:{algorithm.name()}:{wav_path.stem}'
     if redis.exists(key):
         return key
@@ -98,7 +92,7 @@ def evaluate_one(
     return key
 
 
-def evaluate_all(redis: Redis):
+def evaluate_all(redis: Redis[str]) -> None:
     t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
     for wav_path in t:
         for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):

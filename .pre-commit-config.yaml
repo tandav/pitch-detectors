@@ -56,6 +56,7 @@ repos:
     rev: v0.982
     hooks:
     - id: mypy
+      additional_dependencies: [types-redis]
 
   - repo: https://github.com/RobertCraigie/pyright-python
     rev: v1.1.299

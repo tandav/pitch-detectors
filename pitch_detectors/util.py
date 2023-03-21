@@ -14,7 +14,7 @@ def none_to_nan(x: list[float | None]) -> list[float]:
     return [float('nan') if v is None else v for v in x]
 
 
-def load_wav(path: Path | str, rescale: float = 100000):
+def load_wav(path: Path | str, rescale: float = 100000) -> tuple[int, np.ndarray]:
     fs, a = wavfile.read(path)
     a = minmax_scaler(a, a.min(), a.max(), -rescale, rescale).astype(np.float32)
     return fs, a

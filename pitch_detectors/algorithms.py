@@ -14,8 +14,8 @@ class PitchDetector:
         self.hz_min = hz_min
         self.hz_max = hz_max
         self.seconds = len(a) / fs
-        self.f0: np.ndarray | None = None
-        self.t: np.ndarray | None = None
+        self.f0: np.ndarray
+        self.t: np.ndarray
         if (
             os.environ.get('PITCH_DETECTORS_GPU') == 'true' and
             self.use_gpu and
@@ -24,10 +24,6 @@ class PitchDetector:
             raise ConnectionError(f'gpu must be available for {self.name()} algorithm')
 
     def dict(self) -> dict[str, list[float | None]]:
-        if self.f0 is None:
-            raise ValueError('f0 must be not None')
-        if self.t is None:
-            raise ValueError('t must be not None')
         return {'f0': util.nan_to_none(self.f0.tolist()), 't': self.t.tolist()}
 
     @classmethod
@@ -51,7 +47,7 @@ class TorchGPU:
 
     def gpu_available(self) -> bool:
         import torch
-        return torch.cuda.is_available()
+        return torch.cuda.is_available()  # type: ignore
 
 
 class PraatAC(PitchDetector):

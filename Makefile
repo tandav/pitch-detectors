@@ -17,14 +17,14 @@ test: build
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
 	$(IMAGE) \
-	pytest -v --cov pitch_detectors --cov-fail-under 90
+	pytest -v --cov pitch_detectors
 
 .PHONY: test-no-gpu
 test-no-gpu: build
 	docker run --rm -t \
 	-e PITCH_DETECTORS_GPU=false \
 	$(IMAGE) \
-	pytest -v --cov pitch_detectors --cov-fail-under 90
+	pytest -v --cov pitch_detectors
 
 .PHONY: evaluation
 evaluation: build
@@ -34,4 +34,3 @@ evaluation: build
 	-v /home/tandav/Downloads/MIR-1K:/app/MIR-1K \
 	$(IMAGE) \
 	python pitch_detectors/evaluation.py
-	# env

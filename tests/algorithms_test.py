@@ -16,7 +16,7 @@ class Record:
 
 @pytest.fixture
 def record():
-    fs, a = util.load_wav(Path(__file__).parent / 'data' / 'b1a5da49d564a7341e7e1327aa3f229a.wav')
+    fs, a = util.load_wav(Path(__file__).parent.parent / 'data' / 'b1a5da49d564a7341e7e1327aa3f229a.wav')
     return Record(a, fs)
 
 

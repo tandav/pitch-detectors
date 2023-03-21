@@ -4,8 +4,6 @@ RUN curl -L https://tfhub.dev/google/spice/2?tf-hub-format=compressed --output s
     tar xvf spice_2.tar.gz --directory /spice_model && \
     rm spice_2.tar.gz
 
-# FROM nvidia/cuda:11.7.0-cudnn8-devel-ubuntu22.04 - SUCCESS
-# FROM nvidia/cuda:12.0.1-cudnn8-devel-ubuntu22.04 - FAIL
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # https://github.com/NVIDIA/nvidia-docker/wiki/Usage
@@ -33,5 +31,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 COPY pitch_detectors /app/pitch_detectors
 COPY tests /app/tests
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install .[dev]
+COPY data /app/data
+# RUN --mount=type=cache,target=/root/.cache/pip \
+#     pip install .[dev]

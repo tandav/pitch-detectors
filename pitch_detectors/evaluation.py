@@ -1,3 +1,4 @@
+import argparse
 import os
 import time
 from pathlib import Path
@@ -71,28 +72,49 @@ def raw_pitch_accuracy(
     return mir_eval.melody.raw_pitch_accuracy(ref_voicing, ref_cent, est_voicing, est_cent, cent_tolerance)
 
 
-def main():
-    redis = Redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+def evaluate_one(
+    redis: Redis,
+    algorithm: algorithms.PitchDetector,
+    wav_path: Path,
+):
+    key = f'pitch_detectors:evaluation:{algorithm.name()}:{wav_path.stem}'
+    if redis.exists(key):
+        return key
+    fs, a = wavfile.read(wav_path)
+    seconds = len(a) / fs
+    a = a[:, 1].astype(np.float32)
+    rescale = 100000
+    a = minmax_scaler(a, a.min(), a.max(), -rescale, rescale).astype(np.float32)
+    t_true, f0_true = load_f0_true(wav_path, seconds)
+    pitch = algorithm(a, fs)
+    f0 = resample_f0(pitch, t_resampled=t_true)
+    score = raw_pitch_accuracy(f0_true, f0)
+    redis.hset(
+        key, mapping={
+            'raw_pitch_accuracy': score,
+            'timestamp': int(time.time() * 1000),
+        },
+    )
+    return key
+
+
+def evaluate_all(redis: Redis):
     t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
     for wav_path in t:
-        fs, a = wavfile.read(wav_path)
-        seconds = len(a) / fs
-        a = a[:, 1].astype(np.float32)
-        rescale = 100000
-        a = minmax_scaler(a, a.min(), a.max(), -rescale, rescale).astype(np.float32)
-        t_true, f0_true = load_f0_true(wav_path, seconds)
         for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):
-            pitch = algorithm(a, fs)
-            f0 = resample_f0(pitch, t_resampled=t_true)
-            score = raw_pitch_accuracy(f0_true, f0)
-            t.set_description(f'{wav_path.stem} {algorithm.name()} {score}')
-            redis.hset(
-                f'pitch_detectors:evaluation:{algorithm.name()}:{wav_path.stem}', mapping={
-                    'raw_pitch_accuracy': score,
-                    'timestamp': int(time.time() * 1000),
-                },
-            )
+            key = evaluate_one(redis, algorithm, wav_path)
+            t.set_description(key)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--algorithm', type=str)
+    parser.add_argument('--file', type=str)
+    args = parser.parse_args()
+    if (args.algorithm is None) ^ (args.file is None):
+        raise ValueError('you must specify both algorithm and file or neither')
+    redis = Redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+    if args.algorithm is not None and args.file is not None:
+        evaluate_one(redis, algorithm=getattr(algorithms, args.algorithm), wav_path=WAV_DIR / args.file)
+        raise SystemExit(0)
+    evaluate_all(redis)

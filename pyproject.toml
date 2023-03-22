@@ -155,6 +155,7 @@ good-names = [
     "ap",
     "f",
     "p",
+    "h",
 ]
 
 [tool.pylint.messages-control]

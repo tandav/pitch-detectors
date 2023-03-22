@@ -40,6 +40,7 @@ dev = [
     "redis",
     "musiclib",
     "python-dotenv",
+    "tabulate",
 ]
 
 [project.urls]
@@ -144,21 +145,6 @@ load-plugins=[
     "pylint_per_file_ignores",
 ]
 
-[tool.pylint.BASIC]
-good-names = [
-    "a",
-    "fs",
-    "f0",
-    "t",
-    "x",
-    "pm",
-    "sp",
-    "ap",
-    "f",
-    "p",
-    "h",
-]
-
 [tool.pylint.messages-control]
 disable = [
     "missing-function-docstring",
@@ -173,6 +159,7 @@ disable = [
     "unspecified-encoding",
     "redefined-outer-name",
     "too-many-locals",
+    "invalid-name",
 ]
 
 [tool.pylint-per-file-ignores]

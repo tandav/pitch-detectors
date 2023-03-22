@@ -33,6 +33,12 @@ evaluation: build
 	$(IMAGE) \
 	python -m pitch_detectors.evaluation
 
+.PHONY: table
+table:
+	eval "$$(cat .env)"; \
+	REDIS_URL=$$REDIS_URL \
+	python -m pitch_detectors.evaluation.table
+
 .PHONY: bumpver
 bumpver:
 	# usage: make bumpver PART=minor

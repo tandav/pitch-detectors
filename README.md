@@ -1,5 +1,5 @@
 # pitch-detectors
-collection of pitch detection (f0, fundamental frequency) algorithms with unified interface
+collection of pitch (f0, fundamental frequency) detection algorithms with unified interface
 
 ## list of algorithms
 <!-- table-start -->

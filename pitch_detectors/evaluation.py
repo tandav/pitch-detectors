@@ -11,6 +11,7 @@ from redis import Redis
 from scipy.io import wavfile
 
 from pitch_detectors import algorithms
+from pitch_detectors import util
 from pitch_detectors.algorithms.base import PitchDetector
 
 MIR_1K_DIR = Path('f0-datasets/mir-1k/MIR-1K')
@@ -70,9 +71,11 @@ def evaluate_one(
     redis: Redis,  # type: ignore
     algorithm: type[PitchDetector],
     wav_path: Path,
+    source_hashes: dict[str, str],
     dataset: str,
 ) -> str:
-    key = f'pitch_detectors:evaluation:{dataset}:{wav_path.stem}:{algorithm.name()}'
+    source_hash = source_hashes[algorithm.name().lower()]
+    key = f'pitch_detectors:evaluation:{dataset}:{wav_path.stem}:{algorithm.name()}:{source_hash}'
     if redis.exists(key):
         return key
     fs, a = wavfile.read(wav_path)
@@ -88,11 +91,11 @@ def evaluate_one(
     return key
 
 
-def evaluate_all(redis: Redis, dataset: str = 'mir-1k') -> None:  # type: ignore
+def evaluate_all(redis: Redis, source_hashes, dataset: str = 'mir-1k') -> None:  # type: ignore
     t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
     for wav_path in t:
         for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):
-            key = evaluate_one(redis, algorithm, wav_path, dataset)
+            key = evaluate_one(redis, algorithm, wav_path, source_hashes, dataset)
             t.set_description(key)
 
 
@@ -104,7 +107,9 @@ if __name__ == '__main__':
     if (args.algorithm is None) ^ (args.file is None):
         raise ValueError('you must specify both algorithm and file or neither')
     redis = Redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
+    source_hashes = util.source_hashes()
+    redis.hset('pitch_detectors:source_hashes', mapping=source_hashes)  # type: ignore
     if args.algorithm is not None and args.file is not None:
-        evaluate_one(redis, algorithm=getattr(algorithms, args.algorithm), wav_path=WAV_DIR / args.file, dataset='mir-1k')
+        evaluate_one(redis, algorithm=getattr(algorithms, args.algorithm), wav_path=WAV_DIR / args.file, source_hashes=source_hashes, dataset='mir-1k')
         raise SystemExit(0)
-    evaluate_all(redis)
+    evaluate_all(redis, source_hashes)

@@ -11,12 +11,14 @@ from pitch_detectors.algorithms.torchcrepe import TorchCrepe
 from pitch_detectors.algorithms.torchyin import TorchYin
 from pitch_detectors.algorithms.world import World
 from pitch_detectors.algorithms.yaapt import Yaapt
+from pitch_detectors.algorithms.yin import Yin
 
 ALGORITHMS = (
     PraatAC,
     PraatCC,
     PraatSHS,
     Pyin,
+    Yin,
     Reaper,
     Yaapt,
     Crepe,

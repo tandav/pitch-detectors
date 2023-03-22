@@ -5,6 +5,8 @@ from pitch_detectors.algorithms.base import TorchGPU
 
 
 class TorchCrepe(TorchGPU, PitchDetector):
+    """https://github.com/maxrmorrison/torchcrepe"""
+
     def __init__(
         self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8,
         batch_size: int = 2048,

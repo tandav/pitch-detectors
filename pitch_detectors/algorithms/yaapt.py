@@ -4,6 +4,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 
 
 class Yaapt(PitchDetector):
+    """http://bjbschmitt.github.io/AMFM_decompy/pYAAPT.html#amfm_decompy.pYAAPT.yaapt"""
+
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import amfm_decompy.basic_tools as basic
         from amfm_decompy import pYAAPT

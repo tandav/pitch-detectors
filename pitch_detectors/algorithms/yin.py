@@ -4,6 +4,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 
 
 class Yin(PitchDetector):
+    """https://librosa.org/doc/latest/generated/librosa.yin.html#librosa.yin"""
+
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, trough_threshold: float = 0.1):
         import librosa
         super().__init__(a, fs, hz_min, hz_max)

@@ -4,6 +4,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 
 
 class Reaper(PitchDetector):
+    """https://github.com/r9y9/pyreaper"""
+
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import pyreaper
         from dsplib.scale import minmax_scaler

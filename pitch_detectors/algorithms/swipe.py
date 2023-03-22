@@ -4,6 +4,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 
 
 class Swipe(PitchDetector):
+    """https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html"""
+
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import pysptk
         super().__init__(a, fs, hz_min, hz_max)

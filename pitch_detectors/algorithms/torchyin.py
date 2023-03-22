@@ -4,6 +4,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 
 
 class TorchYin(PitchDetector):
+    """https://github.com/brentspell/torch-yin"""
+
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
         import torch
         import torchyin

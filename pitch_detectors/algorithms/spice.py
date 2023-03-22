@@ -5,6 +5,8 @@ from pitch_detectors.algorithms.base import TensorflowGPU
 
 
 class Spice(TensorflowGPU, PitchDetector):
+    """https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html"""
+
     def __init__(
         self,
         a: np.ndarray,

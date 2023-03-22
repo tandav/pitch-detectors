@@ -1,5 +1,6 @@
 from pitch_detectors.algorithms.crepe import Crepe
 from pitch_detectors.algorithms.penn import Penn
+from pitch_detectors.algorithms.piptrack import PipTrack
 from pitch_detectors.algorithms.praatac import PraatAC
 from pitch_detectors.algorithms.praatcc import PraatCC
 from pitch_detectors.algorithms.praatshs import PraatSHS
@@ -30,6 +31,7 @@ ALGORITHMS = (
     TorchYin,
     Spice,
     Penn,
+    PipTrack,
 )
 
 cpu_algorithms = tuple(a.name() for a in ALGORITHMS if not a.use_gpu)  # type: ignore

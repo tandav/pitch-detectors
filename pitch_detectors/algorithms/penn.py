@@ -5,6 +5,8 @@ from pitch_detectors.algorithms.base import TorchGPU
 
 
 class Penn(TorchGPU, PitchDetector):
+    """https://github.com/interactiveaudiolab/penn"""
+
     def __init__(
         self,
         a: np.ndarray,

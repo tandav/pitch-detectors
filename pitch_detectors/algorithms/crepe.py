@@ -5,6 +5,8 @@ from pitch_detectors.algorithms.base import TensorflowGPU
 
 
 class Crepe(TensorflowGPU, PitchDetector):
+    """https://github.com/marl/crepe"""
+
     def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8):
         import crepe
         import tensorflow as tf

@@ -4,6 +4,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 
 
 class World(PitchDetector):
+    """https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder"""
+
     def __init__(self, a: np.ndarray, fs: int):
         import pyworld
         super().__init__(a, fs)

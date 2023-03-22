@@ -36,12 +36,13 @@ class MDBStemSynth(Dataset):
     @classmethod
     def load_true(cls, wav_path: Path, seconds: float) -> F0:
         file = (cls.dataset_dir() / 'annotation_stems' / wav_path.name).with_suffix('.csv')
-        t, f0 = [], []
+        t_list, f0_list = [], []
         with open(file, newline='') as csvfile:
             reader = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC)
             for _t, _f0 in reader:
-                t.append(_t)
-                f0.append(_f0)
-        t = np.array(t)
-        f0 = np.array(f0)
+                t_list.append(_t)
+                f0_list.append(_f0)
+        t = np.array(t_list)
+        f0 = np.array(f0_list)
+        f0[f0 == 0] = np.nan
         return F0(t=t, f0=f0)

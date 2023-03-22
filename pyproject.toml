@@ -5,7 +5,6 @@ authors = [
     {name = "Alexander Rodionov", email = "tandav@tandav.me"},
 ]
 description = "collection of pitch detection algorithms with unified interface"
-readme = "README.md"
 requires-python = ">=3.8,<3.11"
 dependencies = [
     "AMFM-decompy",
@@ -54,8 +53,8 @@ issues = "https://github.com/tandav/pitch-detectors/issues"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["pitch_detectors"]
+# [tool.setuptools]
+# packages = ["pitch_detectors"]
 
 # ==============================================================================
 

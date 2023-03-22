@@ -29,9 +29,9 @@ evaluation: build
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
 	-e REDIS_URL=$$REDIS_URL \
-	-v /media/tandav/sg8tb1/downloads-archive/f0-datasets/mir-1k/MIR-1K:/app/f0-datasets:ro \
+	-v /media/tandav/sg8tb1/downloads-archive/f0-datasets:/app/f0-datasets:ro \
 	$(IMAGE) \
-	python pitch_detectors/evaluation.py
+	python -m pitch_detectors.evaluation
 
 .PHONY: bumpver
 bumpver:

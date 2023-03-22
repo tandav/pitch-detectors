@@ -13,7 +13,7 @@ from scipy.io import wavfile
 from pitch_detectors import algorithms
 from pitch_detectors.algorithms.base import PitchDetector
 
-MIR_1K_DIR = Path('f0-datasets/MIR-1K')
+MIR_1K_DIR = Path('f0-datasets/mir-1k/MIR-1K')
 WAV_DIR = MIR_1K_DIR / 'Wavfile'
 
 

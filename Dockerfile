@@ -17,7 +17,7 @@ COPY --from=downloader /fcnf0++.pt /fcnf0++.pt
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get install -y python3.10-venv libsndfile-dev libasound-dev portaudio19-dev
+    apt-get install -y python3.10-dev python3.10-venv libsndfile-dev libasound-dev portaudio19-dev
 
 # https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
 ENV VIRTUAL_ENV=/venv

@@ -16,14 +16,14 @@ dependencies = [
     "PyAudio",
     "pyreaper==0.0.9",
     "pysptk",
-    "pyworld==0.3.2",
+    "pyworld>=0.3.2",
     "resampy",
     "scipy",
     "tensorflow",
     "tensorflow-hub",
     "torch",
     "torch-yin",
-    "torchcrepe",
+    "torchcrepe>=0.0.18",
     "penn",
 ]
 

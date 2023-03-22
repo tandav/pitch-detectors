@@ -14,7 +14,7 @@ test: build
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
 	$(IMAGE) \
-	pytest -v --cov pitch_detectors
+	pytest -x -v --cov pitch_detectors
 
 .PHONY: test-no-gpu
 test-no-gpu: build
@@ -29,9 +29,15 @@ evaluation: build
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
 	-e REDIS_URL=$$REDIS_URL \
-	-v /home/tandav/Downloads/MIR-1K:/app/MIR-1K \
+	-v /media/tandav/sg8tb1/downloads-archive/f0-datasets:/app/f0-datasets:ro \
 	$(IMAGE) \
-	python pitch_detectors/evaluation.py
+	python -m pitch_detectors.evaluation
+
+.PHONY: table
+table:
+	eval "$$(cat .env)"; \
+	REDIS_URL=$$REDIS_URL \
+	python -m pitch_detectors.evaluation.table
 
 .PHONY: bumpver
 bumpver:

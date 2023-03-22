@@ -5,7 +5,6 @@ authors = [
     {name = "Alexander Rodionov", email = "tandav@tandav.me"},
 ]
 description = "collection of pitch detection algorithms with unified interface"
-readme = "README.md"
 requires-python = ">=3.8,<3.11"
 dependencies = [
     "AMFM-decompy",
@@ -17,14 +16,15 @@ dependencies = [
     "PyAudio",
     "pyreaper==0.0.9",
     "pysptk",
-    "pyworld==0.3.2",
+    "pyworld>=0.3.2",
     "resampy",
     "scipy",
     "tensorflow",
     "tensorflow-hub",
     "torch",
     "torch-yin",
-    "torchcrepe",
+    "torchcrepe>=0.0.18",
+    "penn",
 ]
 
 [project.optional-dependencies]
@@ -40,6 +40,7 @@ dev = [
     "redis",
     "musiclib",
     "python-dotenv",
+    "tabulate",
 ]
 
 [project.urls]
@@ -54,8 +55,8 @@ issues = "https://github.com/tandav/pitch-detectors/issues"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["pitch_detectors"]
+# [tool.setuptools]
+# packages = ["pitch_detectors"]
 
 # ==============================================================================
 
@@ -128,6 +129,7 @@ extend-select = [
 ignore = [
     "E501",  # line too long
     "PLR0913",
+    "TCH003",
 ]
 
 [tool.ruff.per-file-ignores]
@@ -144,20 +146,6 @@ load-plugins=[
     "pylint_per_file_ignores",
 ]
 
-[tool.pylint.BASIC]
-good-names = [
-    "a",
-    "fs",
-    "f0",
-    "t",
-    "x",
-    "pm",
-    "sp",
-    "ap",
-    "f",
-    "p",
-]
-
 [tool.pylint.messages-control]
 disable = [
     "missing-function-docstring",
@@ -171,6 +159,8 @@ disable = [
     "too-few-public-methods",
     "unspecified-encoding",
     "redefined-outer-name",
+    "too-many-locals",
+    "invalid-name",
 ]
 
 [tool.pylint-per-file-ignores]

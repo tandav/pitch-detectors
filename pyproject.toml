@@ -24,6 +24,7 @@ dependencies = [
     "torch",
     "torch-yin",
     "torchcrepe",
+    "penn",
 ]
 
 [project.optional-dependencies]

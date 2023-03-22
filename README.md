@@ -1,8 +1,7 @@
 # pitch-detectors
-collection of pitch detection algorithms with unified interface
+collection of pitch detection (f0, fundamental frequency) algorithms with unified interface
 
 ## list of algorithms
-<!-- table-start -->
 | algorithm                                                                                                  | cpu | gpu | accuracy [1]  |
 |------------------------------------------------------------------------------------------------------------|-----|-----|---------------|
 | [PraatAC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_ac)   |  ✓  |     | 0.880 ± 0.068 |
@@ -18,7 +17,6 @@ collection of pitch detection algorithms with unified interface
 | [Crepe](https://github.com/marl/crepe)                                                                     |  ✓  |  ✓  | 0.802 ± 0.082 |
 | [TorchCrepe](https://github.com/maxrmorrison/torchcrepe)                                                   |  ✓  |  ✓  | 0.817 ± 0.078 |
 | [Spice](https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html)                     |  ✓  |  ✓  | 0.908 ± 0.056 |
-<!-- table-stop -->
 
 - [1] accuracy is mean [raw pitch accuracy](http://craffel.github.io/mir_eval/#mir_eval.melody.raw_pitch_accuracy) on 1000 samples of [MIR-1K](https://www.kaggle.com/datasets/datongmuyuyi/mir1k) dataset
 

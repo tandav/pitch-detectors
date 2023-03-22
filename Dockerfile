@@ -2,7 +2,8 @@ FROM alpine/curl as downloader
 RUN curl -L https://tfhub.dev/google/spice/2?tf-hub-format=compressed --output spice_2.tar.gz && \
     mkdir /spice_model && \
     tar xvf spice_2.tar.gz --directory /spice_model && \
-    rm spice_2.tar.gz
+    rm spice_2.tar.gz && \
+    curl -L https://huggingface.co/maxrmorrison/fcnf0-plus-plus/resolve/main/fcnf0%2B%2B.pt --output fcnf0++.pt
 
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
@@ -11,6 +12,7 @@ FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
 
 COPY --from=downloader /spice_model /spice_model
+COPY --from=downloader /fcnf0++.pt /fcnf0++.pt
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common && \

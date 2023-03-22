@@ -12,6 +12,7 @@ from pitch_detectors.schemas import Wav
 
 
 class MDBStemSynth(Dataset):
+    """https://zenodo.org/record/1481172"""
 
     @classmethod
     def dataset_dir(cls) -> Path:

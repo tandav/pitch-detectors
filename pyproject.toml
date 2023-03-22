@@ -129,6 +129,7 @@ extend-select = [
 ignore = [
     "E501",  # line too long
     "PLR0913",
+    "TCH003",
 ]
 
 [tool.ruff.per-file-ignores]

@@ -11,6 +11,7 @@ from pitch_detectors.schemas import Wav
 
 
 class Mir1K(Dataset):
+    """https://www.kaggle.com/datasets/datongmuyuyi/mir1k"""
 
     @classmethod
     def dataset_dir(cls) -> Path:

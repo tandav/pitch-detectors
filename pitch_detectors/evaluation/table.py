@@ -1,6 +1,10 @@
+import operator
 import os
 import re
+from collections.abc import Iterable
 from pathlib import Path
+from typing import Any
+from typing import TypeAlias
 
 import numpy as np
 import pipe21 as P
@@ -9,9 +13,12 @@ from tabulate import tabulate
 
 from pitch_detectors import algorithms
 from pitch_detectors import util
+from pitch_detectors.evaluation import datasets
+
+DictStr: TypeAlias = dict[str, str]
 
 
-def get_key_fields(s: str) -> dict[str, str]:
+def get_key_fields(s: str) -> DictStr:
     _, _, dataset, wav_path, algorithm, algorithm_sha256 = s.split(':')
     return {
         'dataset': dataset,
@@ -55,32 +62,52 @@ def main() -> None:
     scores = pipeline.execute()
     key_score = list(zip(keys, scores, strict=True))
 
+    def group_key(x: DictStr) -> tuple[str, str]:
+        return x['algorithm'], x['dataset']
+
     algorithm_scores = (
         key_score
         | P.MapKeys(get_key_fields)
         | P.MapValues(lambda x: {'raw_pitch_accuracy': float(x)})
         | P.Map(lambda kv: kv[0] | kv[1])
         | P.MapApply(lambda x: x.pop('algorithm_sha256'))
-        | P.Sorted(key=lambda x: x['algorithm'])
-        | P.GroupBy(lambda x: x['algorithm'])
+        | P.Sorted(key=group_key)
+        | P.GroupBy(group_key)
         | P.MapValues(lambda it: it | P.Map(lambda x: x['raw_pitch_accuracy']) | P.Pipe(list))
         | P.Pipe(list)
     )
 
-    def add_cls(kv: dict[str, str]) -> dict[str, str]:
+    def datasets_stats(it: Iterable[dict[str, Any]]) -> DictStr:
+        out = {}
+        for x in it:
+            cls = getattr(datasets, x['dataset'])
+            dataset = x['dataset']
+            out[f'[{dataset}]({cls.__doc__}) accuracy'] = f"{x.pop('mean'):<1.3f} ± {x.pop('std'):<1.3f}"
+        return out
+
+    def add_cls(kv: DictStr) -> DictStr:
         cls = getattr(algorithms, kv['algorithm'])
         kv['algorithm'] = f'[{cls.name()}]({cls.__doc__})'
         kv['cpu'] = '✓'
         kv['gpu'] = '✓' if cls.use_gpu else ''
-        kv['[MIR-1K](https://www.kaggle.com/datasets/datongmuyuyi/mir1k) accuracy'] = f"{kv.pop('mean'):<1.3f} ± {kv.pop('std'):<1.3f}"
         return kv
+
+    def sort_keys(kv: DictStr) -> DictStr:
+        keys = kv.keys()
+        to_sort = ['algorithm', 'cpu', 'gpu']
+        rest_keys = sorted(keys - set(to_sort))
+        return {k: kv[k] for k in to_sort + rest_keys}
 
     table = (
         algorithm_scores
         | P.MapValues(lambda x: {'mean': np.mean(x).round(3), 'std': np.std(x).round(3)})
+        | P.Map(lambda kv: {'algorithm': kv[0][0], 'dataset': kv[0][1]} | kv[1])
+        | P.Sorted(key=operator.itemgetter('algorithm', 'dataset'))
+        | P.GroupBy(operator.itemgetter('algorithm'))
+        | P.MapValues(datasets_stats)
         | P.Map(lambda kv: {'algorithm': kv[0]} | kv[1])
-        | P.Sorted(key=lambda kv: kv['algorithm'])
         | P.Map(add_cls)
+        | P.Map(sort_keys)
         | P.Pipe(list)
     )
     table = tabulate(table, headers='keys', tablefmt='github')

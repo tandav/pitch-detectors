@@ -11,8 +11,9 @@ from redis import Redis
 from scipy.io import wavfile
 
 from pitch_detectors import algorithms
+from pitch_detectors.algorithms.base import PitchDetector
 
-MIR_1K_DIR = Path('MIR-1K')
+MIR_1K_DIR = Path('f0-datasets/MIR-1K')
 WAV_DIR = MIR_1K_DIR / 'Wavfile'
 
 
@@ -36,7 +37,7 @@ def load_f0_true(wav_path: Path, seconds: float) -> tuple[np.ndarray, np.ndarray
 
 
 def resample_f0(
-    pitch: algorithms.PitchDetector,
+    pitch: PitchDetector,
     t_resampled: np.ndarray,
 ) -> np.ndarray:
     f0_resampled = np.full_like(t_resampled, fill_value=np.nan)
@@ -67,10 +68,11 @@ def raw_pitch_accuracy(
 
 def evaluate_one(
     redis: Redis,  # type: ignore
-    algorithm: type[algorithms.PitchDetector],
+    algorithm: type[PitchDetector],
     wav_path: Path,
+    dataset: str,
 ) -> str:
-    key = f'pitch_detectors:evaluation:{algorithm.name()}:{wav_path.stem}'
+    key = f'pitch_detectors:evaluation:{dataset}:{wav_path.stem}:{algorithm.name()}'
     if redis.exists(key):
         return key
     fs, a = wavfile.read(wav_path)
@@ -86,11 +88,11 @@ def evaluate_one(
     return key
 
 
-def evaluate_all(redis: Redis) -> None:  # type: ignore
+def evaluate_all(redis: Redis, dataset: str = 'mir-1k') -> None:  # type: ignore
     t = tqdm.tqdm(sorted(WAV_DIR.glob('*.wav')))
     for wav_path in t:
         for algorithm in tqdm.tqdm(algorithms.ALGORITHMS, leave=False):
-            key = evaluate_one(redis, algorithm, wav_path)
+            key = evaluate_one(redis, algorithm, wav_path, dataset)
             t.set_description(key)
 
 
@@ -103,6 +105,6 @@ if __name__ == '__main__':
         raise ValueError('you must specify both algorithm and file or neither')
     redis = Redis.from_url(os.environ['REDIS_URL'], decode_responses=True)
     if args.algorithm is not None and args.file is not None:
-        evaluate_one(redis, algorithm=getattr(algorithms, args.algorithm), wav_path=WAV_DIR / args.file)
+        evaluate_one(redis, algorithm=getattr(algorithms, args.algorithm), wav_path=WAV_DIR / args.file, dataset='mir-1k')
         raise SystemExit(0)
     evaluate_all(redis)

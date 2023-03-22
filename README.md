@@ -3,21 +3,21 @@ collection of pitch detection algorithms with unified interface
 
 ## list of algorithms
 <!-- table-start -->
-| algorithm                                                                                                  | cpu | gpu | accuracy [1] |
-|------------------------------------------------------------------------------------------------------------|-----|-----|--------------|
-| [PraatAC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_ac)   |  ✓  |     | 0.880        |
-| [PraatCC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_cc)   |  ✓  |     | 0.893        |
-| [PraatSHS](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_shs) |  ✓  |     | 0.618        |
-| [Pyin](https://librosa.org/doc/latest/generated/librosa.pyin.html)                                         |  ✓  |     | 0.886        |
-| [Reaper](https://github.com/r9y9/pyreaper)                                                                 |  ✓  |     | 0.826        |
-| [Yaapt](http://bjbschmitt.github.io/AMFM_decompy/pYAAPT.html#amfm_decompy.pYAAPT.yaapt)                    |  ✓  |     | 0.759        |
-| [World](https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder)                                   |  ✓  |     | 0.873        |
-| [TorchYin](https://github.com/brentspell/torch-yin)                                                        |  ✓  |     | 0.886        |
-| [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)                            |  ✓  |     | 0.859        |
-| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)                          |  ✓  |     | 0.871        |
-| [Crepe](https://github.com/marl/crepe)                                                                     |  ✓  |  ✓  | 0.802        |
-| [TorchCrepe](https://github.com/maxrmorrison/torchcrepe)                                                   |  ✓  |  ✓  | 0.817        |
-| [Spice](https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html)                     |  ✓  |  ✓  | 0.908        |
+| algorithm                                                                                                  | cpu | gpu | accuracy [1]  |
+|------------------------------------------------------------------------------------------------------------|-----|-----|---------------|
+| [PraatAC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_ac)   |  ✓  |     | 0.880 ± 0.068 |
+| [PraatCC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_cc)   |  ✓  |     | 0.893 ± 0.069 |
+| [PraatSHS](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_shs) |  ✓  |     | 0.618 ± 0.198 |
+| [Pyin](https://librosa.org/doc/latest/generated/librosa.pyin.html)                                         |  ✓  |     | 0.886 ± 0.056 |
+| [Reaper](https://github.com/r9y9/pyreaper)                                                                 |  ✓  |     | 0.826 ± 0.076 |
+| [Yaapt](http://bjbschmitt.github.io/AMFM_decompy/pYAAPT.html#amfm_decompy.pYAAPT.yaapt)                    |  ✓  |     | 0.759 ± 0.116 |
+| [World](https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder)                                   |  ✓  |     | 0.873 ± 0.063 |
+| [TorchYin](https://github.com/brentspell/torch-yin)                                                        |  ✓  |     | 0.886 ± 0.072 |
+| [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)                            |  ✓  |     | 0.859 ± 0.069 |
+| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)                          |  ✓  |     | 0.871 ± 0.078 |
+| [Crepe](https://github.com/marl/crepe)                                                                     |  ✓  |  ✓  | 0.802 ± 0.082 |
+| [TorchCrepe](https://github.com/maxrmorrison/torchcrepe)                                                   |  ✓  |  ✓  | 0.817 ± 0.078 |
+| [Spice](https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html)                     |  ✓  |  ✓  | 0.908 ± 0.056 |
 <!-- table-stop -->
 
 - [1] accuracy is mean [raw pitch accuracy](http://craffel.github.io/mir_eval/#mir_eval.melody.raw_pitch_accuracy) on 1000 samples of [MIR-1K](https://www.kaggle.com/datasets/datongmuyuyi/mir1k) dataset
@@ -45,5 +45,5 @@ plt.show()
 
 
 ## additional features
-- [ ] robust (vote-based + median) averaging of pitch
+- [ ] robust (vote + median) ensemble algorithm using all models
 - [ ] json import/export

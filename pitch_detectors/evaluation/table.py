@@ -40,7 +40,7 @@ def update_readme(
 ) -> None:
     _file = Path(file)
     text = _file.read_text()
-    new = re.sub(fr'{start}(.*){stop}', f'{start}\n{repl}{stop}\n', text, flags=re.DOTALL)
+    new = re.sub(fr'{start}(.*){stop}', f'{start}\n{repl}\n{stop}', text, flags=re.DOTALL)
     _file.write_text(new)
 
 

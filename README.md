@@ -5,24 +5,23 @@ collection of pitch detection (f0, fundamental frequency) algorithms with unifie
 <!-- table-start -->
 | algorithm                                                                                                  | cpu   | gpu   | [MIR-1K](https://www.kaggle.com/datasets/datongmuyuyi/mir1k) accuracy   |
 |------------------------------------------------------------------------------------------------------------|-------|-------|-------------------------------------------------------------------------|
-| [Crepe](https://github.com/marl/crepe)                                                                     | ✓     | ✓     | 0.811 ± 0.080                                                           |
-| [Penn](https://github.com/interactiveaudiolab/penn)                                                        | ✓     | ✓     | 0.742 ± 0.126                                                           |
-| [PipTrack](https://librosa.org/doc/latest/generated/librosa.piptrack.html)                                 | ✓     |       | 0.727 ± 0.228                                                           |
-| [PraatAC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_ac)   | ✓     |       | 0.885 ± 0.069                                                           |
-| [PraatCC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_cc)   | ✓     |       | 0.897 ± 0.073                                                           |
-| [PraatSHS](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_shs) | ✓     |       | 0.628 ± 0.201                                                           |
-| [Pyin](https://librosa.org/doc/latest/generated/librosa.pyin.html)                                         | ✓     |       | 0.891 ± 0.058                                                           |
-| [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)                            | ✓     |       | 0.864 ± 0.068                                                           |
-| [Reaper](https://github.com/r9y9/pyreaper)                                                                 | ✓     |       | 0.833 ± 0.075                                                           |
-| [Spice](https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html)                     | ✓     | ✓     | 0.913 ± 0.056                                                           |
-| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)                          | ✓     |       | 0.882 ± 0.065                                                           |
-| [TorchCrepe](https://github.com/maxrmorrison/torchcrepe)                                                   | ✓     | ✓     | 0.825 ± 0.077                                                           |
-| [TorchYin](https://github.com/brentspell/torch-yin)                                                        | ✓     |       | 0.887 ± 0.075                                                           |
-| [World](https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder)                                   | ✓     |       | 0.879 ± 0.061                                                           |
-| [Yaapt](http://bjbschmitt.github.io/AMFM_decompy/pYAAPT.html#amfm_decompy.pYAAPT.yaapt)                    | ✓     |       | 0.774 ± 0.103                                                           |
-| [Yin](https://librosa.org/doc/latest/generated/librosa.yin.html#librosa.yin)                               | ✓     |       | 0.887 ± 0.064                                                           |<!-- table-stop -->
-
-
+| [Crepe](https://github.com/marl/crepe)                                                                     | ✓     | ✓     | 0.802 ± 0.082                                                           |
+| [Penn](https://github.com/interactiveaudiolab/penn)                                                        | ✓     | ✓     | 0.738 ± 0.124                                                           |
+| [PipTrack](https://librosa.org/doc/latest/generated/librosa.piptrack.html)                                 | ✓     |       | 0.728 ± 0.226                                                           |
+| [PraatAC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_ac)   | ✓     |       | 0.880 ± 0.068                                                           |
+| [PraatCC](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_cc)   | ✓     |       | 0.893 ± 0.069                                                           |
+| [PraatSHS](https://parselmouth.readthedocs.io/en/stable/api_reference.html#parselmouth.Sound.to_pitch_shs) | ✓     |       | 0.618 ± 0.198                                                           |
+| [Pyin](https://librosa.org/doc/latest/generated/librosa.pyin.html)                                         | ✓     |       | 0.886 ± 0.056                                                           |
+| [Rapt](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.rapt.html)                            | ✓     |       | 0.859 ± 0.069                                                           |
+| [Reaper](https://github.com/r9y9/pyreaper)                                                                 | ✓     |       | 0.826 ± 0.076                                                           |
+| [Spice](https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html)                     | ✓     | ✓     | 0.908 ± 0.056                                                           |
+| [Swipe](https://pysptk.readthedocs.io/en/stable/generated/pysptk.sptk.swipe.html)                          | ✓     |       | 0.877 ± 0.064                                                           |
+| [TorchCrepe](https://github.com/maxrmorrison/torchcrepe)                                                   | ✓     | ✓     | 0.817 ± 0.078                                                           |
+| [TorchYin](https://github.com/brentspell/torch-yin)                                                        | ✓     |       | 0.886 ± 0.072                                                           |
+| [World](https://github.com/JeremyCCHsu/Python-Wrapper-for-World-Vocoder)                                   | ✓     |       | 0.873 ± 0.063                                                           |
+| [Yaapt](http://bjbschmitt.github.io/AMFM_decompy/pYAAPT.html#amfm_decompy.pYAAPT.yaapt)                    | ✓     |       | 0.759 ± 0.116                                                           |
+| [Yin](https://librosa.org/doc/latest/generated/librosa.yin.html#librosa.yin)                               | ✓     |       | 0.882 ± 0.061                                                           |
+<!-- table-stop -->
 
 accuracy is mean [raw pitch accuracy](http://craffel.github.io/mir_eval/#mir_eval.melody.raw_pitch_accuracy)
 

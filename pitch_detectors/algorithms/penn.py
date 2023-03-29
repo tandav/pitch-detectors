@@ -32,4 +32,4 @@ class Penn(TorchGPU, PitchDetector):
         f0[periodicity < periodicity_threshold] = np.nan
         self.f0 = f0
         self.periodicity = periodicity
-        self.t = np.linspace(0, self.seconds, self.f0.shape[0] + 1)
+        self.t = np.linspace(0, self.seconds, self.f0.shape[0])

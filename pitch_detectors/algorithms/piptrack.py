@@ -1,14 +1,22 @@
 import numpy as np
 
+from pitch_detectors import config
 from pitch_detectors.algorithms.base import PitchDetector
 
 
 class PipTrack(PitchDetector):
     """https://librosa.org/doc/latest/generated/librosa.piptrack.html"""
 
-    def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, threshold: float = 0.1):
+    def __init__(
+        self,
+        a: np.ndarray,
+        fs: int,
+        hz_min: float = config.HZ_MIN,
+        hz_max: float = config.HZ_MAX,
+        threshold: float = 0.1,
+    ):
         import librosa
-        super().__init__(a, fs, hz_min, hz_max)
+        super().__init__(a, fs)
         pitches, magnitudes = librosa.piptrack(
             y=a,
             sr=fs,

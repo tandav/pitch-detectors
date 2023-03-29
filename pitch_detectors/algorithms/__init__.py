@@ -1,4 +1,5 @@
 from pitch_detectors.algorithms.crepe import Crepe
+from pitch_detectors.algorithms.ensemble import Ensemble  # noqa: F401
 from pitch_detectors.algorithms.penn import Penn
 from pitch_detectors.algorithms.piptrack import PipTrack
 from pitch_detectors.algorithms.praatac import PraatAC

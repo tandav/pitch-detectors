@@ -89,7 +89,7 @@ disallow_any_generics = true
 disallow_incomplete_defs = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
-implicit_reexport = false
+implicit_reexport = true
 no_implicit_optional = true
 show_column_numbers = true
 show_error_codes = true
@@ -161,6 +161,7 @@ disable = [
     "redefined-outer-name",
     "too-many-locals",
     "invalid-name",
+    "protected-access",
 ]
 
 [tool.pylint-per-file-ignores]

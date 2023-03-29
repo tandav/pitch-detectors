@@ -19,7 +19,7 @@ dependencies = [
     "pyworld>=0.3.2",
     "resampy",
     "scipy",
-    "tensorflow",
+    "tensorflow<2.12.0",
     "tensorflow-hub",
     "torch",
     "torch-yin",

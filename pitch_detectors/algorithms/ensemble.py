@@ -1,8 +1,13 @@
 from typing import Any
+from typing import TypeAlias
 
 import numpy as np
 
 from pitch_detectors.algorithms.base import PitchDetector
+from pitch_detectors.schemas import F0
+
+PDT: TypeAlias = type[PitchDetector]
+AlgoDict: TypeAlias = dict[PDT, PitchDetector] | dict[PDT, F0] | dict
 
 
 class Ensemble(PitchDetector):
@@ -15,10 +20,10 @@ class Ensemble(PitchDetector):
         pitch_fs: int = 1024,
         min_duration: float = 1,
         min_algorithms: int = 3,
-        algorithms: tuple[type[PitchDetector], ...] | None = None,
-        algorithms_kwargs: dict[type[PitchDetector], dict[str, Any]] | None = None,
-        algorithms_cache: dict[type[PitchDetector], PitchDetector] | None = None,
-        # algorithm_weights: dict[type[PitchDetector], float] = {},
+        algorithms: tuple[PDT, ...] | None = None,
+        algorithms_kwargs: dict[PDT, dict[str, Any]] | None = None,
+        algorithms_cache: dict[PDT, F0] | None = None,
+        # algorithm_weights: dict[PDT, float] = {},
     ):
         super().__init__(a, fs)
 
@@ -33,7 +38,7 @@ class Ensemble(PitchDetector):
             algorithms_kwargs = algorithms_kwargs or {}
 
             for algorithm_cls in algorithms:
-                self._algorithms[algorithm_cls] = algorithm_cls(a, fs, **algorithms_kwargs.get(algorithm_cls, {}))
+                self._algorithms[algorithm_cls] = algorithm_cls(a, fs, **algorithms_kwargs.get(algorithm_cls, {}))  # type: ignore
         single_n = int(self.seconds * pitch_fs)
         t_resampled = np.linspace(0, self.seconds, single_n)
         f0_resampled = {}

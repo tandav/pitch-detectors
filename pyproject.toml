@@ -181,3 +181,12 @@ venvPath = "/home/tandav/.virtualenvs"
 venv = "pitch-detectors"
 
 # ==============================================================================
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:pkg_resources is deprecated as an API",
+    "ignore:Deprecated call to `pkg_resources.declare_namespace",
+    "ignore:distutils Version classes are deprecated",
+]
+
+# ==============================================================================

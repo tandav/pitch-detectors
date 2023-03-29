@@ -8,11 +8,9 @@ from pitch_detectors import util
 class PitchDetector:
     use_gpu = False
 
-    def __init__(self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600):
+    def __init__(self, a: np.ndarray, fs: int):
         self.a = a
         self.fs = fs
-        self.hz_min = hz_min
-        self.hz_max = hz_max
         self.seconds = len(a) / fs
         self.f0: np.ndarray
         self.t: np.ndarray

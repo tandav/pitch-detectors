@@ -37,7 +37,7 @@ jobs:
       - name: Build a source tarball and wheel
         run: python -m build .
 
-      - name:
+      - name: Publish package to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}

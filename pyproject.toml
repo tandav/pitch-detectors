@@ -12,14 +12,14 @@ dependencies = [
     "dsplib==0.7.2",
     "librosa",
     "numpy",
-    "praat-parselmouth==0.4.1",
+    "praat-parselmouth==0.4.3",
     "PyAudio",
     "pyreaper==0.0.9",
     "pysptk",
     "pyworld>=0.3.2",
     "resampy",
     "scipy",
-    "tensorflow",
+    "tensorflow<2.12.0",
     "tensorflow-hub",
     "torch",
     "torch-yin",
@@ -89,7 +89,7 @@ disallow_any_generics = true
 disallow_incomplete_defs = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
-implicit_reexport = false
+implicit_reexport = true
 no_implicit_optional = true
 show_column_numbers = true
 show_error_codes = true
@@ -161,6 +161,7 @@ disable = [
     "redefined-outer-name",
     "too-many-locals",
     "invalid-name",
+    "protected-access",
 ]
 
 [tool.pylint-per-file-ignores]
@@ -179,5 +180,14 @@ aggressive = 3
 [tool.pyright]
 venvPath = "/home/tandav/.virtualenvs"
 venv = "pitch-detectors"
+
+# ==============================================================================
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:pkg_resources is deprecated as an API",
+    "ignore:Deprecated call to `pkg_resources.declare_namespace",
+    "ignore:distutils Version classes are deprecated",
+]
 
 # ==============================================================================

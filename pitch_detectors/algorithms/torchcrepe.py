@@ -1,5 +1,6 @@
 import numpy as np
 
+from pitch_detectors import config
 from pitch_detectors.algorithms.base import PitchDetector
 from pitch_detectors.algorithms.base import TorchGPU
 
@@ -8,7 +9,12 @@ class TorchCrepe(TorchGPU, PitchDetector):
     """https://github.com/maxrmorrison/torchcrepe"""
 
     def __init__(
-        self, a: np.ndarray, fs: int, hz_min: float = 75, hz_max: float = 600, confidence_threshold: float = 0.8,
+        self,
+        a: np.ndarray,
+        fs: int,
+        hz_min: float = config.HZ_MIN,
+        hz_max: float = config.HZ_MAX,
+        confidence_threshold: float = 0.8,
         batch_size: int = 2048,
         device: str | None = None,
     ):
@@ -18,14 +24,14 @@ class TorchCrepe(TorchGPU, PitchDetector):
             device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
             torch.device(device)
 
-        super().__init__(a, fs, hz_min, hz_max)
+        super().__init__(a, fs)
 
         f0, confidence = torchcrepe.predict(
             torch.from_numpy(a[np.newaxis, ...]),
             fs,
             hop_length=int(fs / 100),  # 10 ms
-            fmin=self.hz_min,
-            fmax=self.hz_max,
+            fmin=hz_min,
+            fmax=hz_max,
             batch_size=batch_size,
             device=device,
             return_periodicity=True,

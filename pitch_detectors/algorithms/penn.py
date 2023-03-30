@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 from pitch_detectors import config
@@ -15,11 +17,15 @@ class Penn(TorchGPU, PitchDetector):
         hz_min: float = config.HZ_MIN,
         hz_max: float = config.HZ_MAX,
         periodicity_threshold: float = 0.1,
-        checkpoint: str = '/fcnf0++.pt',
+        checkpoint: str | None = None,
     ):
         import torch
         from penn.core import from_audio
         super().__init__(a, fs)
+
+        if checkpoint is None:
+            checkpoint = os.environ.get('PITCH_DETECTORS_PENN_CHECKPOINT_PATH', '/fcnf0++.pt')
+
         f0, periodicity = from_audio(
             audio=torch.tensor(a.reshape(1, -1)),
             sample_rate=fs,

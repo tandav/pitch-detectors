@@ -45,11 +45,9 @@ class TensorflowGPU:
     def set_memory_limit(self) -> None:
         if TensorflowGPU.memory_limit_initialized:
             return
-        memory_limit = int(os.environ.get('PITCH_DETECTORS_GPU_MEMORY_LIMIT', 8192))
         gpus = self.gpus
         for gpu in gpus:
             self.tf.config.experimental.set_memory_growth(gpu, True)
-            self.tf.config.experimental.set_virtual_device_configuration(gpu, [self.tf.config.experimental.VirtualDeviceConfiguration(memory_limit=memory_limit)])
         TensorflowGPU.memory_limit_initialized = True
 
     @property

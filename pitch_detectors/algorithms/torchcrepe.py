@@ -20,11 +20,13 @@ class TorchCrepe(TorchGPU, PitchDetector):
     ):
         import torch
         import torchcrepe
+
+        TorchGPU.__init__(self)
+        PitchDetector.__init__(self, a, fs)
+
         if device is None:
             device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
             torch.device(device)
-
-        super().__init__(a, fs)
 
         f0, confidence = torchcrepe.predict(
             torch.from_numpy(a[np.newaxis, ...]),
@@ -45,3 +47,4 @@ class TorchCrepe(TorchGPU, PitchDetector):
         f0[confidence < confidence_threshold] = np.nan
         self.f0 = f0
         self.t = np.linspace(0, self.seconds, f0.shape[0])
+        torch.cuda.empty_cache()

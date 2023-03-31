@@ -22,24 +22,28 @@ class PitchDetector:
     def name(cls) -> str:
         return cls.__name__
 
-    def gpu_available(self) -> bool:
-        return False
 
-
-class TensorflowGPU:
+class UsesGPU:
     use_gpu = True
-    memory_limit_initialized = False
 
     def __init__(self) -> None:
-        import tensorflow as tf
-        self.tf = tf
-
         if (
             os.environ.get('PITCH_DETECTORS_GPU') == 'true' and
             not self.gpu_available()
         ):
             raise ConnectionError('gpu must be available')
 
+    def gpu_available(self) -> bool:
+        return False
+
+
+class TensorflowGPU(UsesGPU):
+    memory_limit_initialized = False
+
+    def __init__(self) -> None:
+        import tensorflow as tf
+        self.tf = tf
+        super().__init__()
         self.set_memory_limit()
 
     def set_memory_limit(self) -> None:
@@ -58,8 +62,7 @@ class TensorflowGPU:
         return bool(self.gpus)
 
 
-class TorchGPU:
-    use_gpu = True
+class TorchGPU(UsesGPU):
 
     def gpu_available(self) -> bool:
         import torch

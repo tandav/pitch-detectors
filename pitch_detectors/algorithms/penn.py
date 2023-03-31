@@ -21,7 +21,8 @@ class Penn(TorchGPU, PitchDetector):
     ):
         import torch
         from penn.core import from_audio
-        super().__init__(a, fs)
+        TorchGPU.__init__(self)
+        PitchDetector.__init__(self, a, fs)
 
         if checkpoint is None:
             checkpoint = os.environ.get('PITCH_DETECTORS_PENN_CHECKPOINT_PATH', '/fcnf0++.pt')

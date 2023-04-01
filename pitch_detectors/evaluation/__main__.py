@@ -59,9 +59,9 @@ def evaluate_one(
     wav = dataset.load_wav(wav_path)
     seconds = len(wav.a) / wav.fs
     rescale = 100000
-    wav.a = minmax_scaler(wav.a, wav.a.min(), wav.a.max(), -rescale, rescale).astype(np.float32)
+    a = minmax_scaler(wav.a, wav.a.min(), wav.a.max(), -rescale, rescale).astype(np.float32)
     true = dataset.load_true(wav_path, seconds)
-    pitch = algorithm(wav.a, wav.fs)
+    pitch = algorithm(a, wav.fs)
     f0 = resample_f0(pitch, t_resampled=true.t)
     score = raw_pitch_accuracy(true.f0, f0)
     redis.set(key, score)

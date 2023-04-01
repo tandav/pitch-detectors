@@ -1,22 +1,19 @@
-import dataclasses
+from typing import NamedTuple
 
 import numpy as np
 
 
-@dataclasses.dataclass
-class Wav:
+class Wav(NamedTuple):
     fs: int
     a: np.ndarray
 
 
-@dataclasses.dataclass
-class F0:
+class F0(NamedTuple):
     t: np.ndarray
     f0: np.ndarray
 
 
-@dataclasses.dataclass
-class Record:
+class Record(NamedTuple):
     fs: int | None = None
     a: np.ndarray | None = None
     t: np.ndarray | None = None

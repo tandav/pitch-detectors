@@ -13,6 +13,8 @@ push:
 test: build
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
+	-v /home/tandav/docs/bhairava/libmv/data/fcnf0++.pt:/fcnf0++.pt:ro \
+	-v /home/tandav/docs/bhairava/libmv/data/spice_model:/spice_model:ro \
 	$(IMAGE) \
 	pytest -x -v --cov pitch_detectors
 
@@ -20,6 +22,8 @@ test: build
 test-no-gpu: build
 	docker run --rm -t \
 	-e PITCH_DETECTORS_GPU=false \
+	-v /home/tandav/docs/bhairava/libmv/data/fcnf0++.pt:/fcnf0++.pt:ro \
+	-v /home/tandav/docs/bhairava/libmv/data/spice_model:/spice_model:ro \
 	$(IMAGE) \
 	pytest -v --cov pitch_detectors
 

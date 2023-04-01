@@ -21,6 +21,7 @@ class Penn(TorchGPU, PitchDetector):
     ):
         import torch
         from penn.core import from_audio
+
         TorchGPU.__init__(self)
         PitchDetector.__init__(self, a, fs)
 
@@ -40,3 +41,4 @@ class Penn(TorchGPU, PitchDetector):
         self.f0 = f0
         self.periodicity = periodicity
         self.t = np.linspace(0, self.seconds, self.f0.shape[0])
+        torch.cuda.empty_cache()

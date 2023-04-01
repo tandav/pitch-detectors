@@ -25,6 +25,7 @@ class PitchDetector:
 
 class UsesGPU:
     use_gpu = True
+    memory_limit_initialized = False
 
     def __init__(self) -> None:
         if (
@@ -38,13 +39,13 @@ class UsesGPU:
 
 
 class TensorflowGPU(UsesGPU):
-    memory_limit_initialized = False
 
     def __init__(self) -> None:
         import tensorflow as tf
         self.tf = tf
         super().__init__()
-        self.set_memory_limit()
+        if self.gpu_available() and os.environ.get('PITCH_DETECTORS_GPU_MEMORY_LIMIT') == 'true':
+            self.set_memory_limit()
 
     def set_memory_limit(self) -> None:
         if TensorflowGPU.memory_limit_initialized:
@@ -64,6 +65,18 @@ class TensorflowGPU(UsesGPU):
 
 class TorchGPU(UsesGPU):
 
-    def gpu_available(self) -> bool:
+    def __init__(self) -> None:
         import torch
-        return torch.cuda.is_available()  # type: ignore
+        self.torch = torch
+        super().__init__()
+        if self.gpu_available() and os.environ.get('PITCH_DETECTORS_GPU_MEMORY_LIMIT') == 'true':
+            self.set_memory_limit()
+
+    def set_memory_limit(self) -> None:
+        if TorchGPU.memory_limit_initialized:
+            return
+        self.torch.cuda.set_per_process_memory_fraction(fraction=1 / 8, device=0)
+        TorchGPU.memory_limit_initialized = True
+
+    def gpu_available(self) -> bool:
+        return self.torch.cuda.is_available()  # type: ignore

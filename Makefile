@@ -13,6 +13,7 @@ push:
 test: build
 	docker run --rm -t --gpus all \
 	-e PITCH_DETECTORS_GPU=true \
+	-e PITCH_DETECTORS_GPU_MEMORY_LIMIT=true \
 	-v /home/tandav/docs/bhairava/libmv/data/fcnf0++.pt:/fcnf0++.pt:ro \
 	-v /home/tandav/docs/bhairava/libmv/data/spice_model:/spice_model:ro \
 	$(IMAGE) \

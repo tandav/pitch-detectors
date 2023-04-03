@@ -35,6 +35,6 @@ ALGORITHMS = (
     PipTrack,
 )
 
-cpu_algorithms = tuple(a.name() for a in ALGORITHMS if not a.use_gpu)  # type: ignore
-gpu_algorithms = tuple(a.name() for a in ALGORITHMS if a.use_gpu)  # type: ignore
+cpu_algorithms = tuple(a.name() for a in ALGORITHMS if not a.gpu_capable)  # type: ignore
+gpu_algorithms = tuple(a.name() for a in ALGORITHMS if a.gpu_capable)  # type: ignore
 algorithms = cpu_algorithms + gpu_algorithms

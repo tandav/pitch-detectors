@@ -89,7 +89,7 @@ def main() -> None:
         cls = getattr(algorithms, kv['algorithm'])
         kv['algorithm'] = f'[{cls.name()}]({cls.__doc__})'
         kv['cpu'] = '✓'
-        kv['gpu'] = '✓' if cls.use_gpu else ''
+        kv['gpu'] = '✓' if cls.gpu_capable else ''
         return kv
 
     def sort_keys(kv: DictStr) -> DictStr:

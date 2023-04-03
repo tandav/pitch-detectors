@@ -18,5 +18,5 @@ def environ():
         'PITCH_DETECTORS_GPU_MEMORY_LIMIT': 'true',
         'PITCH_DETECTORS_PENN_CHECKPOINT_PATH': '/home/tandav/docs/bhairava/libmv/data/fcnf0++.pt',
         'PITCH_DETECTORS_SPICE_MODEL_PATH': '/home/tandav/docs/bhairava/libmv/data/spice_model',
-        'LD_LIBRARY_PATH': '/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/curand/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cuda_runtime/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cusparse/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cudnn/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cuda_nvrtc/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cuda_cupti/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/nccl/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cusolver/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/nvtx/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cufft/lib:/home/tandav/.virtualenvs/pitch-detectors/lib/python3.10/site-packages/nvidia/cublas/lib',
+        'LD_LIBRARY_PATH': util.ld_library_path(),
     }

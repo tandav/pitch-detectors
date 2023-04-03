@@ -1,5 +1,6 @@
 import hashlib
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -34,3 +35,20 @@ def source_hashes() -> dict[str, str]:
         h.update(p.read_bytes())
         hashes[p.stem] = h.hexdigest()
     return hashes
+
+
+def python_version() -> str:
+    return f'python{sys.version_info.major}.{sys.version_info.minor}'
+
+
+def ld_library_path() -> str:
+    cuda_home = f'{sys.exec_prefix}/lib/{python_version()}/site-packages/nvidia'
+    paths = []
+    for p in Path(cuda_home).iterdir():
+        if not p.is_dir() or p.name == '__pycache__':
+            continue
+        lib = p / 'lib'
+        if not lib.exists():
+            raise FileNotFoundError(f'lib not found: {lib}')
+        paths.append(str(lib))
+    return ':'.join(paths)

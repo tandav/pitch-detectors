@@ -16,14 +16,17 @@ class Spice(TensorflowGPU, PitchDetector):
         confidence_threshold: float = 0.8,
         expected_sample_rate: int = 16000,
         spice_model_path: str | None = None,
+        gpu: bool | None = None,
     ):
 
         import resampy
+
+        a = resampy.resample(a, fs, expected_sample_rate)
+        TensorflowGPU.__init__(self, gpu)
+        PitchDetector.__init__(self, a, fs)
+
         import tensorflow as tf
         import tensorflow_hub as hub
-        a = resampy.resample(a, fs, expected_sample_rate)
-        TensorflowGPU.__init__(self)
-        PitchDetector.__init__(self, a, fs)
 
         if spice_model_path is None:
             spice_model_path = os.environ.get('PITCH_DETECTORS_SPICE_MODEL_PATH', '/spice_model')

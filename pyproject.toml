@@ -24,6 +24,8 @@ dependencies = [
     "torch-yin",
     "torchcrepe>=0.0.18",
     "penn",
+    "nvidia-cudnn-cu11",
+    "tensorrt",
 ]
 
 [project.optional-dependencies]
@@ -135,6 +137,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "examples/*" = ["INP001"]
+"scripts/*" = ["INP001"]
 "tests/*" = ["S101"]
 
 [tool.ruff.isort]

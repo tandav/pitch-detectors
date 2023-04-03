@@ -27,23 +27,29 @@ class UsesGPU:
     gpu_capable = True
     memory_limit_initialized = False
 
-    def __init__(self) -> None:
-        if (
-            os.environ.get('PITCH_DETECTORS_GPU') == 'true' and
-            not self.gpu_available()
-        ):
+    def __init__(self, gpu: bool | None = None) -> None:
+        self.gpu = gpu or os.environ.get('PITCH_DETECTORS_GPU') == 'true'
+        if self.gpu and not self.gpu_available():
             raise ConnectionError('gpu must be available')
+        if not self.gpu:
+            self.disable_gpu()
+            if self.gpu_available():
+                raise ConnectionError('gpu must not be available')
 
     def gpu_available(self) -> bool:
         return False
 
+    def disable_gpu(self) -> None:
+        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 
 class TensorflowGPU(UsesGPU):
 
-    def __init__(self) -> None:
+    def __init__(self, gpu: bool | None = None) -> None:
+
         import tensorflow as tf
         self.tf = tf
-        super().__init__()
+        super().__init__(gpu)
         if self.gpu_available() and os.environ.get('PITCH_DETECTORS_GPU_MEMORY_LIMIT') == 'true':
             self.set_memory_limit()
 
@@ -65,10 +71,10 @@ class TensorflowGPU(UsesGPU):
 
 class TorchGPU(UsesGPU):
 
-    def __init__(self) -> None:
+    def __init__(self, gpu: bool | None = None) -> None:
         import torch
         self.torch = torch
-        super().__init__()
+        super().__init__(gpu)
         if self.gpu_available() and os.environ.get('PITCH_DETECTORS_GPU_MEMORY_LIMIT') == 'true':
             self.set_memory_limit()
 

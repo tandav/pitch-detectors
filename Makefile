@@ -9,6 +9,10 @@ push:
 	docker push $(IMAGE)
 	docker push tandav/pitch-detectors:latest
 
+.PHONY: test-no-docker
+test-no-docker:
+	pytest -x -v --cov pitch_detectors
+
 .PHONY: test
 test: build
 	docker run --rm -t --gpus all \

@@ -8,7 +8,11 @@ from pitch_detectors.schemas import F0
 
 
 def test_ensemble(record, environ):
-    with mock.patch.dict(os.environ, environ | {'PITCH_DETECTORS_GPU': 'true'}):
+    if os.environ.get('PITCH_DETECTORS_GPU') == 'false':
+        env = environ
+    else:
+        env = environ | {'PITCH_DETECTORS_GPU': 'true'}
+    with mock.patch.dict(os.environ, env):
         alg = algorithms.Ensemble(record.a, record.fs, algorithms=algorithms.ALGORITHMS)
         assert alg.f0.shape == alg.t.shape
         algorithms_cache = {k: F0(alg.t, alg.f0) for k, alg in alg._algorithms.items()}

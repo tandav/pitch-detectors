@@ -37,18 +37,30 @@ def source_hashes() -> dict[str, str]:
     return hashes
 
 
-def python_version() -> str:
-    return f'python{sys.version_info.major}.{sys.version_info.minor}'
-
-
 def ld_library_path() -> str:
-    cuda_home = f'{sys.exec_prefix}/lib/{python_version()}/site-packages/nvidia'
-    paths = []
-    for p in Path(cuda_home).iterdir():
-        if not p.is_dir() or p.name == '__pycache__':
-            continue
-        lib = p / 'lib'
-        if not lib.exists():
-            raise FileNotFoundError(f'lib not found: {lib}')
-        paths.append(str(lib))
-    return ':'.join(paths)
+    site_packages = f'{sys.exec_prefix}/lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages'
+    libs = [
+        f'{site_packages}/nvidia/curand/lib',
+        f'{site_packages}/nvidia/cuda_runtime/lib',
+        f'{site_packages}/nvidia/cusparse/lib',
+        f'{site_packages}/nvidia/cudnn/lib',
+        f'{site_packages}/nvidia/cuda_nvrtc/lib',
+        f'{site_packages}/nvidia/cuda_cupti/lib',
+        f'{site_packages}/nvidia/nccl/lib',
+        f'{site_packages}/nvidia/cusolver/lib',
+        f'{site_packages}/nvidia/nvtx/lib',
+        f'{site_packages}/nvidia/cufft/lib',
+        f'{site_packages}/nvidia/cublas/lib',
+        f'{site_packages}/tensorrt',
+    ]
+    return ':'.join(libs)
+
+
+if __name__ == '__main__':
+    supported_actions = {'ld_library_path'}
+    if len(sys.argv) != 2:  # noqa: PLR2004
+        raise ValueError('Pass action as argument. Supported_actions:', supported_actions)
+    if sys.argv[1] == 'ld_library_path':
+        print(ld_library_path())
+    else:
+        raise ValueError(f'Action {sys.argv[1]} not supported. Supported_actions:', supported_actions)

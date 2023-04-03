@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -14,9 +15,14 @@ def record():
 
 @pytest.fixture
 def environ():
-    return {
+    env = {
         'PITCH_DETECTORS_GPU_MEMORY_LIMIT': 'true',
-        'PITCH_DETECTORS_PENN_CHECKPOINT_PATH': '/home/tandav/docs/bhairava/libmv/data/fcnf0++.pt',
-        'PITCH_DETECTORS_SPICE_MODEL_PATH': '/home/tandav/docs/bhairava/libmv/data/spice_model',
+        # 'PITCH_DETECTORS_PENN_CHECKPOINT_PATH': os.environ.get('PITCH_DETECTORS_PENN_CHECKPOINT_PATH'),
+        # 'PITCH_DETECTORS_SPICE_MODEL_PATH': '/home/tandav/docs/bhairava/libmv/data/spice_model',
         'LD_LIBRARY_PATH': util.ld_library_path(),
     }
+    if 'PITCH_DETECTORS_PENN_CHECKPOINT_PATH' in os.environ:
+        env['PITCH_DETECTORS_PENN_CHECKPOINT_PATH'] = os.environ['PITCH_DETECTORS_PENN_CHECKPOINT_PATH']
+    if 'PITCH_DETECTORS_SPICE_MODEL_PATH' in os.environ:
+        env['PITCH_DETECTORS_SPICE_MODEL_PATH'] = os.environ['PITCH_DETECTORS_SPICE_MODEL_PATH']
+    return env

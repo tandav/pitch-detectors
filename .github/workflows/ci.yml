@@ -14,6 +14,9 @@ jobs:
       - name: build image
         run: make build
 
+      - name: test-no-docker
+        run: make test-no-docker
+
       - name: test
         run: make test
 

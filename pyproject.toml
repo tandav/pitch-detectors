@@ -19,6 +19,7 @@ dependencies = [
     "resampy",
     "scipy",
     "tensorflow<2.12.0",
+    # "tf-nightly", # trying this instead tensorflow. It support tensorrt8. (regular tensorflow only supports outdated tensorrt 7 which is python3.8 only)
     "tensorflow-hub",
     "torch",
     "torch-yin",

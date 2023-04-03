@@ -22,5 +22,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install .[dev]
 
 COPY pitch_detectors /app/pitch_detectors
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-deps .
+
 COPY tests /app/tests
+COPY scripts/ /app/scripts
 COPY data /app/data

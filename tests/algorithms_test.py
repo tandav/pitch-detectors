@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -8,7 +9,7 @@ from pitch_detectors.algorithms import ALGORITHMS
 
 @pytest.mark.order(3)
 @pytest.mark.parametrize('algorithm', ALGORITHMS)
-@pytest.mark.parametrize('gpu', ['true', 'false'])
+@pytest.mark.parametrize('gpu', ['false'] if os.environ.get('PITCH_DETECTORS_GPU') == 'false' else ['true', 'false'])
 def test_detection(algorithm, environ, gpu):
     env = environ | {
         'PITCH_DETECTORS_ALGORITHM': algorithm.name(),

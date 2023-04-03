@@ -9,8 +9,13 @@ push:
 	docker push $(IMAGE)
 	docker push tandav/pitch-detectors:latest
 
+# python -m pitch_detectors.util ld_library_path
+
 .PHONY: test-no-docker
 test-no-docker:
+	PITCH_DETECTORS_PENN_CHECKPOINT_PATH=/home/tandav/docs/bhairava/libmv/data/fcnf0++.pt \
+	PITCH_DETECTORS_SPICE_MODEL_PATH=/home/tandav/docs/bhairava/libmv/data/spice_model \
+	. /home/tandav/.virtualenvs/pitch-detectors/bin/activate; \
 	pytest -x -v --cov pitch_detectors
 
 .PHONY: test

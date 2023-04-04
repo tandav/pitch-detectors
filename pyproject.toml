@@ -19,11 +19,14 @@ dependencies = [
     "resampy",
     "scipy",
     "tensorflow<2.12.0",
+    # "tf-nightly", # trying this instead tensorflow. It support tensorrt8. (regular tensorflow only supports outdated tensorrt 7 which is python3.8 only)
     "tensorflow-hub",
     "torch",
     "torch-yin",
     "torchcrepe>=0.0.18",
     "penn",
+    "nvidia-cudnn-cu11",
+    "tensorrt",
 ]
 
 [project.optional-dependencies]
@@ -33,6 +36,7 @@ dev = [
     "pytest",
     "pytest-order",
     "pytest-cov",
+    "pytest-env",
     "mir_eval",
     "tqdm",
     "redis",
@@ -135,6 +139,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "examples/*" = ["INP001"]
+"scripts/*" = ["INP001", "S101"]
 "tests/*" = ["S101"]
 
 [tool.ruff.isort]

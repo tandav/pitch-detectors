@@ -9,6 +9,12 @@ push:
 	docker push $(IMAGE)
 	docker push tandav/pitch-detectors:latest
 
+# python -m pitch_detectors.util ld_library_path
+
+.PHONY: test-no-docker
+test-no-docker:
+	/home/tandav/.virtualenvs/pitch-detectors/bin/python -m pytest -c no_docker_pytest.ini -x -v --cov pitch_detectors
+
 .PHONY: test
 test: build
 	docker run --rm -t --gpus all \

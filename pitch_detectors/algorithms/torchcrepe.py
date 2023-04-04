@@ -16,17 +16,13 @@ class TorchCrepe(TorchGPU, PitchDetector):
         hz_max: float = config.HZ_MAX,
         confidence_threshold: float = 0.8,
         batch_size: int = 2048,
-        device: str | None = None,
+        gpu: bool | None = None,
     ):
         import torch
         import torchcrepe
 
-        TorchGPU.__init__(self)
+        TorchGPU.__init__(self, gpu)
         PitchDetector.__init__(self, a, fs)
-
-        if device is None:
-            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-            torch.device(device)
 
         f0, confidence = torchcrepe.predict(
             torch.from_numpy(a[np.newaxis, ...]),
@@ -35,7 +31,7 @@ class TorchCrepe(TorchGPU, PitchDetector):
             fmin=hz_min,
             fmax=hz_max,
             batch_size=batch_size,
-            device=device,
+            device='cuda:0' if self.gpu else 'cpu',
             return_periodicity=True,
         )
         win_length = 3

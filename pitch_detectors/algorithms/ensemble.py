@@ -4,13 +4,15 @@ from typing import TypeAlias
 import numpy as np
 
 from pitch_detectors.algorithms.base import PitchDetector
+from pitch_detectors.algorithms.base import TensorflowGPU
+from pitch_detectors.algorithms.base import TorchGPU
 from pitch_detectors.schemas import F0
 
 PDT: TypeAlias = type[PitchDetector]
 AlgoDict: TypeAlias = dict[PDT, PitchDetector] | dict[PDT, F0] | dict
 
 
-class Ensemble(PitchDetector):
+class Ensemble(TensorflowGPU, TorchGPU, PitchDetector):
     """https://github.com/tandav/pitch-detectors/blob/master/pitch_detectors/algorithms/ensemble.py"""
 
     def __init__(
@@ -24,8 +26,11 @@ class Ensemble(PitchDetector):
         algorithms_kwargs: dict[PDT, dict[str, Any]] | None = None,
         algorithms_cache: dict[PDT, F0] | None = None,
         # algorithm_weights: dict[PDT, float] = {},
+        gpu: bool | None = None,
     ):
-        super().__init__(a, fs)
+        TensorflowGPU.__init__(self, gpu)
+        TorchGPU.__init__(self, gpu)
+        PitchDetector.__init__(self, a, fs)
 
         if algorithms_cache is not None:
             if (algorithms is not None or algorithms_kwargs is not None):

@@ -36,6 +36,7 @@ dev = [
     "pytest",
     "pytest-order",
     "pytest-cov",
+    "pytest-env",
     "mir_eval",
     "tqdm",
     "redis",
@@ -138,7 +139,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "examples/*" = ["INP001"]
-"scripts/*" = ["INP001"]
+"scripts/*" = ["INP001", "S101"]
 "tests/*" = ["S101"]
 
 [tool.ruff.isort]

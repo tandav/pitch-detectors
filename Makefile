@@ -13,10 +13,7 @@ push:
 
 .PHONY: test-no-docker
 test-no-docker:
-	PITCH_DETECTORS_PENN_CHECKPOINT_PATH=/home/tandav/docs/bhairava/libmv/data/fcnf0++.pt \
-	PITCH_DETECTORS_SPICE_MODEL_PATH=/home/tandav/docs/bhairava/libmv/data/spice_model \
-	. /home/tandav/.virtualenvs/pitch-detectors/bin/activate; \
-	pytest -x -v --cov pitch_detectors
+	/home/tandav/.virtualenvs/pitch-detectors/bin/python -m pytest -c no_docker_pytest.ini -x -v --cov pitch_detectors
 
 .PHONY: test
 test: build

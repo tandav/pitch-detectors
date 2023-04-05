@@ -7,6 +7,7 @@ from pitch_detectors import util
 
 class PitchDetector:
     gpu_capable = False
+    uses_gpu_framework = False
 
     def __init__(self, a: np.ndarray, fs: int):
         self.a = a
@@ -25,6 +26,7 @@ class PitchDetector:
 
 class UsesGPU:
     gpu_capable = True
+    uses_gpu_framework = True
     memory_limit_initialized = False
 
     def __init__(self, gpu: bool | None = None) -> None:

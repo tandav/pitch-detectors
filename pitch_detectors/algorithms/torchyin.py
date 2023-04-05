@@ -7,6 +7,8 @@ from pitch_detectors.algorithms.base import PitchDetector
 class TorchYin(PitchDetector):
     """https://github.com/brentspell/torch-yin"""
 
+    uses_gpu_framework = True
+
     def __init__(
         self,
         a: np.ndarray,

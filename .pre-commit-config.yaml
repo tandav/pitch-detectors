@@ -59,6 +59,6 @@ repos:
       additional_dependencies: [types-redis, types-tabulate]
 
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.299
+    rev: v1.1.302
     hooks:
     - id: pyright

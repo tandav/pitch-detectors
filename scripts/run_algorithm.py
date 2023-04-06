@@ -5,6 +5,8 @@ import numpy as np
 
 from pitch_detectors import algorithms
 from pitch_detectors import util
+from pitch_detectors.algorithms.ensemble import Ensemble
+from pitch_detectors.algorithms.ensemble import vote_and_median
 from pitch_detectors.schemas import F0
 
 
@@ -14,20 +16,15 @@ def main(
 ) -> None:
     fs, a = util.load_wav(audio_path)
     if algorithm == 'ensemble':
-        alg = algorithms.Ensemble(a, fs, algorithms=algorithms.ALGORITHMS)
+        alg = Ensemble(a, fs, algorithms=algorithms.ALGORITHMS)
+        algorithms_cache = {k.name(): F0(alg.t, alg.f0) for k, alg in alg._algorithms.items()}
+        vm = vote_and_median(algorithms_cache, alg.seconds)
+        assert np.array_equal(alg.t, vm.t)
+        assert np.array_equal(alg.f0, vm.f0, equal_nan=True)
     else:
         alg = getattr(algorithms, os.environ['PITCH_DETECTORS_ALGORITHM'])(a, fs)
 
     assert alg.f0.shape == alg.t.shape
-
-    if algorithm == 'ensemble':
-        algorithms_cache = {k: F0(alg.t, alg.f0) for k, alg in alg._algorithms.items()}
-        alg_from_cache = algorithms.Ensemble(a, fs, algorithms_cache=algorithms_cache)
-        assert np.array_equal(alg.t, alg_from_cache.t)
-        assert np.array_equal(alg.f0, alg_from_cache.f0, equal_nan=True)
-        # data = alg.dict()
-        # data['algorithms_cache'] = {k: _alg.dict() for k, _alg in alg._algorithms.items()}
-        # print(json.dumps(alg.dict(), allow_nan=True))
 
 
 if __name__ == '__main__':

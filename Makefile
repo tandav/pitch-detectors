@@ -13,7 +13,7 @@ push:
 
 .PHONY: test-no-docker
 test-no-docker:
-	/home/tandav/.virtualenvs/pitch-detectors/bin/python -m pytest -c no_docker_pytest.ini -x -v --cov pitch_detectors
+	/home/tandav/.cache/.virtualenvs/pitch-detectors/bin/python -m pytest -c no_docker_pytest.ini -x -v --cov pitch_detectors
 
 .PHONY: test
 test: build

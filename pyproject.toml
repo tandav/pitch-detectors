@@ -184,7 +184,7 @@ aggressive = 3
 # ==============================================================================
 
 [tool.pyright]
-venvPath = "/home/tandav/.virtualenvs"
+venvPath = "/home/tandav/.cache/.virtualenvs"
 venv = "pitch-detectors"
 
 # ==============================================================================

@@ -27,6 +27,7 @@ dependencies = [
     "penn",
     "nvidia-cudnn-cu11",
     "tensorrt",
+    "pydantic",
 ]
 
 [project.optional-dependencies]

@@ -17,7 +17,7 @@ def main(
     fs, a = util.load_wav(audio_path)
     if algorithm == 'ensemble':
         alg = Ensemble(a, fs, algorithms=algorithms.ALGORITHMS)
-        algorithms_cache = {k.name(): F0(alg.t, alg.f0) for k, alg in alg._algorithms.items()}
+        algorithms_cache = {k.name(): F0(t=alg.t, f0=alg.f0) for k, alg in alg._algorithms.items()}
         vm = vote_and_median(algorithms_cache, alg.seconds)
         assert np.array_equal(alg.t, vm.t)
         assert np.array_equal(alg.f0, vm.f0, equal_nan=True)

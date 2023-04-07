@@ -30,6 +30,8 @@ def vote_and_median(
     for i, (name, data) in enumerate(algorithms.items()):
         t = data.t
         f0 = data.f0
+        if len(f0) == 0:
+            raise ValueError(f'algorithm {name} returned an empty f0 array')
         f0_resampled[name] = np.full_like(t_resampled, fill_value=np.nan)
         notna_slices = np.ma.clump_unmasked(np.ma.masked_invalid(f0))
 

@@ -28,10 +28,18 @@ collection of pitch (f0, fundamental frequency) detection algorithms with unifie
 accuracy is mean [raw pitch accuracy](http://craffel.github.io/mir_eval/#mir_eval.melody.raw_pitch_accuracy)
 
 ## install
-all agorithms tested on python3.10, this is recommended python version to use
+[Colab notebook with plots for all algorithms/models](https://colab.research.google.com/drive/1PVsk4ygDZIhIO3GEIukQJOKkgibqoG1n)
+
+All agorithms tested on python3.12, this is recommended python version to use
 ```bash
+# install latest version from git
+pip install 'pitch-detectors @ git+https://github.com/tandav/pitch-detectors@master'
+
+# older version is also available for python3.10
 pip install pitch-detectors
 ```
+
+note: latest version will be uploaded to PYPI as soon as [this CREPE MR](https://github.com/marl/crepe/pull/103) will be merged
 
 ## usage
 

@@ -43,5 +43,5 @@ lint:
   variables:
     PIP_INDEX_URL: https://pypi.tandav.me/index/
   script:
-    - pip install .[dev]
+    - pip install pre-commit
     - pre-commit run --all-files

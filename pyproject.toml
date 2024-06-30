@@ -5,29 +5,26 @@ authors = [
     {name = "Alexander Rodionov", email = "tandav@tandav.me"},
 ]
 description = "collection of pitch detection algorithms with unified interface"
-requires-python = ">=3.8,<3.11"
+requires-python = ">=3.8,<3.13"
 dependencies = [
     "AMFM-decompy",
-    "crepe",
-    "dsplib>=0.7.2",
+    "crepe @ git+https://github.com/tandav/crepe@ca79a30daa5e4de061c5a7a26ecc8065011c3697",
+    "dsplib>=0.9.0",
     "librosa",
-    "numpy",
+    "numpy<2.0",  # todo: upgrade after tensorflow will support it
     "praat-parselmouth>=0.4.3",
     "pyreaper>=0.0.9",
     "pysptk",
     "pyworld>=0.3.2",
     "resampy",
     "scipy",
-    "tensorflow<2.12.0",
-    # "tf-nightly", # trying this instead tensorflow. It support tensorrt8. (regular tensorflow only supports outdated tensorrt 7 which is python3.8 only)
+    "tensorflow",
     "tensorflow-hub",
     "torch",
     "torch-yin",
     "torchcrepe>=0.0.18",
     "penn",
-    "nvidia-cudnn-cu11",
-    "tensorrt",
-    "pydantic",
+    "pydantic>=2.0",
 ]
 
 [project.optional-dependencies]
@@ -41,9 +38,10 @@ dev = [
     "mir_eval",
     "tqdm",
     "redis",
-    "musiclib",
+    "musiclib==2.1.0",
     "python-dotenv",
     "tabulate",
+    "s3fs",
 ]
 
 [project.urls]
@@ -118,7 +116,7 @@ disallow_untyped_defs = false
 
 # ==============================================================================
 
-[tool.ruff]
+[tool.ruff.lint]
 extend-select = [
     "W",
     "C",
@@ -139,14 +137,15 @@ ignore = [
     "E501",  # line too long
     "PLR0913",
     "TCH003",
+    "S603",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "examples/*" = ["INP001"]
 "scripts/*" = ["INP001", "S101"]
 "tests/*" = ["S101"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 force-single-line = true
 
 # ==============================================================================
@@ -172,6 +171,7 @@ disable = [
     "too-many-locals",
     "invalid-name",
     "protected-access",
+    "cyclic-import",
 ]
 
 [tool.pylint-per-file-ignores]
@@ -188,16 +188,15 @@ aggressive = 3
 # ==============================================================================
 
 [tool.pyright]
-venvPath = "/home/tandav/.cache/.virtualenvs"
+venvPath = "/home/tandav/.cache/virtualenvs"
 venv = "pitch-detectors"
 
 # ==============================================================================
 
 [tool.pytest.ini_options]
 filterwarnings = [
-    "ignore:pkg_resources is deprecated as an API",
-    "ignore:Deprecated call to `pkg_resources.declare_namespace",
-    "ignore:distutils Version classes are deprecated",
+    "ignore:Type google._upb._message.ScalarMapContainer uses PyType_Spec with a metaclass that has custom tp_new.:DeprecationWarning",
+    "ignore:Type google._upb._message.MessageMapContainer uses PyType_Spec with a metaclass that has custom tp_new.:DeprecationWarning",
 ]
 
 # ==============================================================================

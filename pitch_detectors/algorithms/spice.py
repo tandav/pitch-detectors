@@ -7,7 +7,13 @@ from pitch_detectors.algorithms.base import TensorflowGPU
 
 
 class Spice(TensorflowGPU, PitchDetector):
-    """https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html"""
+    """
+    https://ai.googleblog.com/2019/11/spice-self-supervised-pitch-estimation.html
+    https://blog.tensorflow.org/2020/06/estimating-pitch-with-spice-and-tensorflow-hub.html
+    https://github.com/tensorflow/docs/blob/master/site/en/hub/tutorials/spice.ipynb
+    https://www.kaggle.com/models/google/spice
+    https://www.kaggle.com/models/google/spice/tensorFlow1/spice/2
+    """
 
     def __init__(
         self,
@@ -25,21 +31,20 @@ class Spice(TensorflowGPU, PitchDetector):
         TensorflowGPU.__init__(self, gpu)
         PitchDetector.__init__(self, a, fs)
 
-        import tensorflow as tf
         import tensorflow_hub as hub
 
         if spice_model_path is None:
             spice_model_path = os.environ.get('PITCH_DETECTORS_SPICE_MODEL_PATH', '/spice_model')
 
         model = hub.load(spice_model_path)
-        model_output = model.signatures['serving_default'](tf.constant(a, tf.float32))
+        model_output = model.signatures['serving_default'](self.tf.constant(a, self.tf.float32))
         confidence = 1.0 - model_output['uncertainty']
         self.f0 = self.output2hz(model_output['pitch'].numpy())
         self.f0[confidence < confidence_threshold] = np.nan
         self.t = np.linspace(0, self.seconds, self.f0.shape[0])
 
+    @staticmethod
     def output2hz(
-        self,
         pitch_output: np.ndarray,
         pt_offset: float = 25.58,
         pt_slope: float = 63.07,

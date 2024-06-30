@@ -1,3 +1,5 @@
+[![pipeline status](https://gitlab.tandav.me/pitchtrack/pitch-detectors/badges/master/pipeline.svg)](https://gitlab.tandav.me/pitchtrack/pitch-detectors/-/commits/master)
+
 # pitch-detectors
 collection of pitch (f0, fundamental frequency) detection algorithms with unified interface
 
@@ -50,3 +52,8 @@ plt.show()
 ## additional features
 - [ ] robust (vote + median) ensemble algorithm using all models
 - [ ] json import/export
+
+## notes:
+Tests are running in subprocess (using `scripts/run_algorithm.py`) to avoid pytorch cuda import caching.
+It's difficult to disable gpu after it has been initialized. (https://github.com/pytorch/pytorch/issues/9158)
+It is also difficult to set correct PATH and LD_LIBRARY_PATH without a subprocess.

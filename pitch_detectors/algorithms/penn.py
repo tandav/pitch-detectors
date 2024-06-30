@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import numpy as np
 
@@ -28,13 +29,14 @@ class Penn(TorchGPU, PitchDetector):
 
         if checkpoint is None:
             checkpoint = os.environ.get('PITCH_DETECTORS_PENN_CHECKPOINT_PATH', '/fcnf0++.pt')
+        checkpoint_path = Path(checkpoint)
 
         f0, periodicity = from_audio(
             audio=torch.tensor(a.reshape(1, -1)),
             sample_rate=fs,
             fmin=hz_min,
             fmax=hz_max,
-            checkpoint=checkpoint,
+            checkpoint=checkpoint_path,
             gpu=0 if self.gpu else None,
         )
         if self.gpu:

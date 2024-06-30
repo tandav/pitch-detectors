@@ -1,0 +1,51 @@
+version: '3'
+dotenv: ['.env']
+vars:
+  BASE_IMAGE: tandav/pitch-detectors-base:12.4.1-cudnn-devel-ubuntu22.0-python3.12
+  IMAGE: tandav/pitch-detectors:12.4.1-cudnn-devel-ubuntu22.0-python3.12
+
+tasks:
+  build-base:
+    cmd: docker build --tag {{.BASE_IMAGE}} --file docker/base.dockerfile .
+
+  push-base:
+    cmd: docker push {{.BASE_IMAGE}}
+
+  build:
+    cmd: docker build --build-arg="BASE_IMAGE={{.BASE_IMAGE}}" --tag {{.IMAGE}} --file docker/pitch-detectors.dockerfile .
+
+  push:
+    cmd: docker push {{.IMAGE}}
+
+  test:
+    deps: [build]
+    cmd: >
+      docker run --rm -t --gpus all
+      -v /media/tandav/sg8tb1/downloads-archive/libmv-data/spice_model:/spice_model:ro
+      -v /media/tandav/sg8tb1/downloads-archive/libmv-data/fcnf0++.pt:/fcnf0++.pt:ro
+      {{.IMAGE}}
+      pytest -v
+
+  test-no-docker:
+    cmd: pytest -v
+
+  freeze:
+    cmd: docker run --rm -t --gpus all {{.IMAGE}} /venv/bin/pip freeze > freeze.txt
+
+  bumpver:
+    desc: 'Bump version. Pass --<part>. Usage example: task bumpver -- --minor'
+    cmds:
+      - bumpver update --no-fetch {{.CLI_ARGS}}
+
+  evaluation:
+    deps: [build]
+    cmd: >
+      docker run --rm -t --gpus all
+      -e PITCH_DETECTORS_GPU=true
+      -e REDIS_URL={{.REDIS_URL}}
+      -v /media/tandav/sg8tb1/downloads-archive/f0-datasets:/app/f0-datasets:ro
+      {{.IMAGE}}
+      python -m pitch_detectors.evaluation
+
+  table:
+    cmd: python -m pitch_detectors.evaluation.table

@@ -9,7 +9,6 @@ from pitch_detectors.algorithms.base import TorchGPU
 from pitch_detectors.schemas import F0
 
 PDT: TypeAlias = type[PitchDetector]
-AlgoDict: TypeAlias = dict[PDT, PitchDetector] | dict[PDT, F0] | dict
 
 
 def vote_and_median(
@@ -63,7 +62,7 @@ class Ensemble(TensorflowGPU, TorchGPU, PitchDetector):
         self,
         a: np.ndarray,
         fs: int,
-        algorithms: tuple[PDT, ...],
+        algorithms: tuple[PDT, ...] | None = None,
         algorithms_kwargs: dict[PDT, dict[str, Any]] | None = None,
         gpu: bool | None = None,
         vote_and_median_kwargs: dict[str, Any] | None = None,
@@ -72,10 +71,15 @@ class Ensemble(TensorflowGPU, TorchGPU, PitchDetector):
         TorchGPU.__init__(self, gpu)
         PitchDetector.__init__(self, a, fs)
 
+        if algorithms is None:
+            from pitch_detectors.algorithms import ALGORITHMS as algorithms_
+        else:
+            algorithms_ = algorithms
+
         self._algorithms = {}
         algorithms_kwargs = algorithms_kwargs or {}
 
-        for cls in algorithms:
+        for cls in algorithms_:
             self._algorithms[cls] = cls(a, fs, **algorithms_kwargs.get(cls, {}))
 
         f0 = vote_and_median(

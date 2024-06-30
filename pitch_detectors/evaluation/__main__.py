@@ -5,7 +5,7 @@ from pathlib import Path
 import mir_eval
 import numpy as np
 import tqdm
-from dsplib.scale import minmax_scaler
+from dsplib.scale import minmax_scaler_array
 from redis import Redis
 
 from pitch_detectors import algorithms
@@ -59,7 +59,7 @@ def evaluate_one(
     wav = dataset.load_wav(wav_path)
     seconds = len(wav.a) / wav.fs
     rescale = 100000
-    a = minmax_scaler(wav.a, wav.a.min(), wav.a.max(), -rescale, rescale).astype(np.float32)
+    a = minmax_scaler_array(wav.a, wav.a.min(), wav.a.max(), -rescale, rescale).astype(np.float32)
     true = dataset.load_true(wav_path, seconds)
     pitch = algorithm(a, wav.fs)
     f0 = resample_f0(pitch, t_resampled=true.t)

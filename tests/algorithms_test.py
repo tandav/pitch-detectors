@@ -8,14 +8,21 @@ from pitch_detectors import algorithms
 
 
 @pytest.mark.order(3)
-@pytest.mark.parametrize('algorithm', algorithms.ALGORITHMS)
-@pytest.mark.parametrize('gpu', ['false'] if os.environ.get('PITCH_DETECTORS_GPU') == 'false' else ['true', 'false'])
-def test_detection(algorithm, environ, gpu, subprocess_warning):
-    env = environ | {
-        'PITCH_DETECTORS_ALGORITHM': algorithm.name(),
+@pytest.mark.parametrize('gpu', ['true', 'false'], ids=['gpu', 'cpu'])
+@pytest.mark.parametrize('algorithm', (*algorithms.algorithms, 'Ensemble'))
+def test_detection(algorithm, gpu):
+    env = {
+        'PITCH_DETECTORS_GPU_MEMORY_LIMIT': 'true',
+        'PITCH_DETECTORS_AUDIO_PATH': 'data/b1a5da49d564a7341e7e1327aa3f229a.wav',
+        'PATH': '',  # for some reason this line prevents SIGSEGV for Spice algorithm
+        # 'PATH': '/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',  # this is from docker history of base cuda image https://hub.docker.com/layers/nvidia/cuda/12.4.1-cudnn-devel-ubuntu22.04/images/sha256-0a1cb6e7bd047a1067efe14efdf0276352d5ca643dfd77963dab1a4f05a003a4?context=explore
+        'PITCH_DETECTORS_ALGORITHM': algorithm,
         'PITCH_DETECTORS_GPU': gpu,
     }
-    print(subprocess_warning)
+    if 'PITCH_DETECTORS_PENN_CHECKPOINT_PATH' in os.environ:
+        env['PITCH_DETECTORS_PENN_CHECKPOINT_PATH'] = os.environ['PITCH_DETECTORS_PENN_CHECKPOINT_PATH']
+    if 'PITCH_DETECTORS_SPICE_MODEL_PATH' in os.environ:
+        env['PITCH_DETECTORS_SPICE_MODEL_PATH'] = os.environ['PITCH_DETECTORS_SPICE_MODEL_PATH']
     subprocess.check_call([sys.executable, 'scripts/run_algorithm.py'], env=env)
 
 

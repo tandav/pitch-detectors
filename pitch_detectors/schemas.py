@@ -1,13 +1,12 @@
-from typing import Any
-
 import numpy as np
 from pydantic import BaseModel
-from pydantic import root_validator
+from pydantic import ConfigDict
+from pydantic import model_validator
+from typing_extensions import Self
 
 
 class ArbitraryBaseModel(BaseModel):
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class Wav(ArbitraryBaseModel):
@@ -19,11 +18,11 @@ class F0(ArbitraryBaseModel):
     t: np.ndarray
     f0: np.ndarray
 
-    @root_validator
-    def check_shape(cls, values: dict[str, Any]) -> dict[str, Any]:  # pylint: disable=no-self-argument
-        if values['t'].shape != values['f0'].shape:
+    @model_validator(mode='after')
+    def check_shape(self) -> Self:
+        if self.t.shape != self.f0.shape:
             raise ValueError('t and f0 must have the same shape')
-        return values
+        return self
 
 
 class Record(ArbitraryBaseModel):

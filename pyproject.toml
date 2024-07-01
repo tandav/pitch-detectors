@@ -11,7 +11,7 @@ dependencies = [
     "crepe @ git+https://github.com/tandav/crepe@ca79a30daa5e4de061c5a7a26ecc8065011c3697",
     "dsplib>=0.9.0",
     "librosa",
-    "numpy<2.0",  # todo: upgrade after tensorflow will support it
+    "numpy<3.0",  # todo: upgrade after tensorflow will support it
     "praat-parselmouth>=0.4.3",
     "pyreaper>=0.0.9",
     "pysptk",

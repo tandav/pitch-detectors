@@ -8,7 +8,7 @@ description = "collection of pitch detection algorithms with unified interface"
 requires-python = ">=3.8,<3.13"
 dependencies = [
     "AMFM-decompy",
-    "crepe @ git+https://github.com/tandav/crepe@ca79a30daa5e4de061c5a7a26ecc8065011c3697",
+    "crepe>=0.0.16",  # https://github.com/marl/crepe/pull/103
     "dsplib>=0.9.0",
     "librosa",
     "numpy<2.0",  # todo: upgrade after tensorflow will support it
@@ -20,7 +20,7 @@ dependencies = [
     "scipy",
     "tensorflow",
     "tensorflow-hub",
-    "torch",
+    "torch<=2.3.1",  # greater version breaks tensorflow-gpu-based algorithms (gpu unavailable error)
     "torch-yin",
     "torchcrepe>=0.0.18",
     "penn",

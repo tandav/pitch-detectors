@@ -1,6 +1,6 @@
 [project]
 name = "pitch-detectors"
-version = "0.5.2"
+version = "0.6.0"
 authors = [
     {name = "Alexander Rodionov", email = "tandav@tandav.me"},
 ]
@@ -65,7 +65,7 @@ exclude = ["data*"]
 # ==============================================================================
 
 [tool.bumpver]
-current_version = "v0.5.2"
+current_version = "v0.6.0"
 version_pattern = "vMAJOR.MINOR.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true

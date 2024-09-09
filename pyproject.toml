@@ -20,7 +20,7 @@ dependencies = [
     "scipy",
     "tensorflow",
     "tensorflow-hub",
-    "torch<=2.3.1",  # greater version breaks tensorflow-gpu-based algorithms (gpu unavailable error)
+    "torch<=2.4.1",  # greater version breaks tensorflow-gpu-based algorithms (gpu unavailable error)
     "torch-yin",
     "torchcrepe>=0.0.18",
     "penn",

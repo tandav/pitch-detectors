@@ -5,34 +5,34 @@ authors = [
     {name = "Alexander Rodionov", email = "tandav@tandav.me"},
 ]
 description = "collection of pitch detection algorithms with unified interface"
-requires-python = ">=3.8,<3.13"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "AMFM-decompy",
-    "crepe>=0.0.16",  # https://github.com/marl/crepe/pull/103
-    "dsplib>=0.9.0",
+    "tensorflow",
+    "tensorflow-hub",
+    "dsplib==0.10.1",
     "librosa",
-    "numpy<2.0",  # todo: upgrade after tensorflow will support it
+    "scipy==1.14.0",
+    "numpy>=2.0",
     "praat-parselmouth>=0.4.3",
     "pyreaper>=0.0.9",
     "pysptk",
     "pyworld>=0.3.2",
-    "resampy",
-    "scipy",
-    "tensorflow",
-    "tensorflow-hub",
-    "torch<=2.3.1",  # greater version breaks tensorflow-gpu-based algorithms (gpu unavailable error)
-    "torch-yin",
-    "torchcrepe>=0.0.18",
-    "penn",
     "pydantic>=2.0",
+    "crepe>=0.0.16",
+    "resampy==0.4.3",
+    "torch",
+    "torch-yin>=0.1.3",
+    "torchcrepe>=0.0.18",
+    "penn>=0.0.14",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "bumpver",
     "pre-commit",
-    "pytest",
-    "pytest-order",
+    "pytest==8.3.2",
+    "pytest-order==1.2.1",
     "pytest-cov",
     "pytest-env",
     "mir_eval",
@@ -49,6 +49,12 @@ source = "https://github.com/tandav/pitch-detectors"
 # docs = "https://tandav.github.io/pitch-detectors/"
 issues = "https://github.com/tandav/pitch-detectors/issues"
 "release notes" = "https://github.com/tandav/pitch-detectors/releases"
+
+# ==============================================================================
+
+[[tool.uv.index]]
+name = "local-cache"
+url = "https://pypi.tandav.me/index/"
 
 # ==============================================================================
 
@@ -177,19 +183,12 @@ disable = [
 [tool.pylint-per-file-ignores]
 "/tests/" = "redefined-outer-name"
 
-
 # ==============================================================================
 
 [tool.autopep8]
 ignore="E501,E701"
 recursive = true
 aggressive = 3
-
-# ==============================================================================
-
-[tool.pyright]
-venvPath = "/home/tandav/.cache/virtualenvs"
-venv = "pitch-detectors"
 
 # ==============================================================================
 

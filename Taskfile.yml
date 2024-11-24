@@ -1,41 +1,56 @@
 version: '3'
 dotenv: ['.env']
-vars:
-  BASE_IMAGE: tandav/pitch-detectors-base:12.4.1-cudnn-devel-ubuntu22.0-python3.12
-  IMAGE: tandav/pitch-detectors:12.4.1-cudnn-devel-ubuntu22.0-python3.12
-
+env:
+  UBUNTU_VERSION: 24.04
+  CUDA_VERSION: 12.6.2
+  PYTHON_VERSION: 3.12
+  UV_IMAGE: ghcr.io/astral-sh/uv:0.5.4@sha256:5436c72d52c9c0d011010ce68f4c399702b3b0764adcf282fe0e546f20ebaef6
+  BASE_IMAGE_CUDA_SHA256: 431b2307f69f41ca51503a6103be3b5c52dcfad18b201af7f12349a0cca35a4e
+  BASE_IMAGE_CUDA: nvidia/cuda:{{.CUDA_VERSION}}-cudnn-devel-ubuntu{{.UBUNTU_VERSION}}@sha256:{{.BASE_IMAGE_CUDA_SHA256}}
+  BASE_IMAGE: tandav/pitch-detectors-base:{{.CUDA_VERSION}}-cudnn-devel-ubuntu{{.UBUNTU_VERSION}}-python{{.PYTHON_VERSION}}
+  IMAGE: tandav/pitch-detectors:{{.CUDA_VERSION}}-cudnn-devel-ubuntu{{.UBUNTU_VERSION}}-python{{.PYTHON_VERSION}}
+  MODEL_PATH_SPICE: /mnt/sg8tb1/downloads-archive/libmv-data/spice_model
+  MODEL_PATH_PENN: /mnt/sg8tb1/downloads-archive/libmv-data/fcnf0++.pt
 tasks:
   build-base:
-    cmd: docker build --tag {{.BASE_IMAGE}} --file docker/base.dockerfile .
+    cmd: >
+        docker build
+        --build-arg BASE_IMAGE_CUDA=$BASE_IMAGE_CUDA
+        --tag $BASE_IMAGE
+        --file docker/base.dockerfile .
 
   push-base:
     cmd: docker push {{.BASE_IMAGE}}
 
   build:
-    cmd: docker build --build-arg="BASE_IMAGE={{.BASE_IMAGE}}" --tag {{.IMAGE}} --file docker/pitch-detectors.dockerfile .
+    deps: [build-base]
+    cmd: >
+      docker build
+      --build-arg="BASE_IMAGE=$BASE_IMAGE"
+      --build-arg="UV_IMAGE=$UV_IMAGE"
+      --tag $IMAGE
+      --file docker/pitch-detectors.dockerfile .
 
   push:
-    cmd: docker push {{.IMAGE}}
+    cmd: docker push $IMAGE
 
   test:
     deps: [build]
     cmd: >
       docker run --rm -t --gpus all
-      -v /media/tandav/sg8tb1/downloads-archive/libmv-data/spice_model:/spice_model:ro
-      -v /media/tandav/sg8tb1/downloads-archive/libmv-data/fcnf0++.pt:/fcnf0++.pt:ro
-      {{.IMAGE}}
+      -v $MODEL_PATH_SPICE:/spice_model:ro
+      -v $MODEL_PATH_PENN:/fcnf0++.pt:ro
+      $IMAGE
+      uv run
       pytest -v
 
   test-no-docker:
-    cmd: pytest -v
-
-  freeze:
-    cmd: docker run --rm -t --gpus all {{.IMAGE}} /venv/bin/pip freeze > freeze.txt
+    cmd: uv run pytest -v
 
   bumpver:
     desc: 'Bump version. Pass --<part>. Usage example: task bumpver -- --minor'
     cmds:
-      - bumpver update --no-fetch {{.CLI_ARGS}}
+      - uv run bumpver update --no-fetch {{.CLI_ARGS}}
 
   evaluation:
     deps: [build]
@@ -48,4 +63,4 @@ tasks:
       python -m pitch_detectors.evaluation
 
   table:
-    cmd: python -m pitch_detectors.evaluation.table
+    cmd: uv run python -m pitch_detectors.evaluation.table

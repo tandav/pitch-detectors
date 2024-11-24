@@ -56,8 +56,3 @@ repos:
     hooks:
     - id: mypy
       additional_dependencies: [types-redis, types-tabulate, pydantic]
-
-  # - repo: https://github.com/RobertCraigie/pyright-python
-  #   rev: v1.1.369
-  #   hooks:
-  #   - id: pyright

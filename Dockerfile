@@ -1,8 +1,16 @@
-ARG BASE_IMAGE=scratch
-ARG UV_IMAGE=ghcr.io/astral-sh/uv:latest
-FROM ${UV_IMAGE} AS uv
 
-FROM ${BASE_IMAGE} AS base
+ARG BASE_IMAGE_CUDA=scratch
+ARG PYTHON_VERSION=3.12
+ARG UV_IMAGE=ghcr.io/astral-sh/uv:latest
+FROM python:${PYTHON_VERSION}-slim AS python
+FROM ${UV_IMAGE} AS uv
+FROM ${BASE_IMAGE_CUDA}
+# disable banner from nvidia/cuda entrypoint
+ENTRYPOINT []
+
+# Copy Python binaries and libraries from the official Python image
+COPY --from=python /usr/local /usr/local
+ENV PATH="/usr/local/bin:$PATH"
 
 COPY --from=uv /uv /uvx /bin/
 

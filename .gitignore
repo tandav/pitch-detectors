@@ -1,2 +1,4 @@
 *.ipynb
 dist
+*.pyc
+*.egg-info

@@ -8,7 +8,7 @@ test:
     - u60
     - docker
     - gpu
-  image: tandav/pitch-detectors:12.6.2-cudnn-devel-ubuntu24.04-python3.12
+  image: tandav/pitch-detectors:12.6.2-cudnn-devel-ubuntu24.04-python3.12@sha256:665b04e9a86d95b1b57175e582d66f0b6cdcda2accd7593845697a4021bd4c46
   cache:
     key: $CI_PROJECT_NAME
     paths:

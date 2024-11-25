@@ -7,29 +7,18 @@ env:
   UV_IMAGE: ghcr.io/astral-sh/uv:0.5.4@sha256:5436c72d52c9c0d011010ce68f4c399702b3b0764adcf282fe0e546f20ebaef6
   BASE_IMAGE_CUDA_SHA256: 431b2307f69f41ca51503a6103be3b5c52dcfad18b201af7f12349a0cca35a4e
   BASE_IMAGE_CUDA: nvidia/cuda:{{.CUDA_VERSION}}-cudnn-devel-ubuntu{{.UBUNTU_VERSION}}@sha256:{{.BASE_IMAGE_CUDA_SHA256}}
-  BASE_IMAGE: tandav/pitch-detectors-base:{{.CUDA_VERSION}}-cudnn-devel-ubuntu{{.UBUNTU_VERSION}}-python{{.PYTHON_VERSION}}
   IMAGE: tandav/pitch-detectors:{{.CUDA_VERSION}}-cudnn-devel-ubuntu{{.UBUNTU_VERSION}}-python{{.PYTHON_VERSION}}
   MODEL_PATH_SPICE: /mnt/sg8tb1/downloads-archive/libmv-data/spice_model
   MODEL_PATH_PENN: /mnt/sg8tb1/downloads-archive/libmv-data/fcnf0++.pt
 tasks:
-  build-base:
-    cmd: >
-        docker build
-        --build-arg BASE_IMAGE_CUDA=$BASE_IMAGE_CUDA
-        --tag $BASE_IMAGE
-        --file docker/base.dockerfile .
-
-  push-base:
-    cmd: docker push {{.BASE_IMAGE}}
-
   build:
-    deps: [build-base]
     cmd: >
       docker build
-      --build-arg="BASE_IMAGE=$BASE_IMAGE"
-      --build-arg="UV_IMAGE=$UV_IMAGE"
+      --build-arg BASE_IMAGE_CUDA=$BASE_IMAGE_CUDA
+      --build-arg PYTHON_VERSION=$PYTHON_VERSION
+      --build-arg UV_IMAGE=$UV_IMAGE
       --tag $IMAGE
-      --file docker/pitch-detectors.dockerfile .
+      .
 
   push:
     cmd: docker push $IMAGE
